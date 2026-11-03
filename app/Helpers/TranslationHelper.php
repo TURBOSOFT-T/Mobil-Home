@@ -11,7 +11,6 @@ class TranslationHelper
     {
         $locale = app()->getLocale();
 
-        // Si la langue est le français, si le texte est vide, ou s'il ne contient aucun caractère alphanumérique
         if ($locale == "fr" || empty($text) || !preg_match('/[a-zA-Z0-9]/', $text)) {
             return $text;
         }
@@ -26,9 +25,8 @@ class TranslationHelper
                 
                 return $tr->translate($text);
             } catch (\Exception $e) {
-                // En production, si l'API est injoignable ou l'IP bloquée, on log l'erreur discrètement et on retourne le texte original
-                Log::warning('Erreur TranslationHelper : ' . $e->getMessage());
-                
+                // En cas de blocage IP ou de problème réseau en production, on retourne le texte d'origine sans bloquer le site
+                Log::warning('Erreur de traduction Google : ' . $e->getMessage());
                 return $text;
             }
         });
