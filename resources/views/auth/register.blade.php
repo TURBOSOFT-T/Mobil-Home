@@ -127,7 +127,7 @@ $produit = DB::table('produits')->get();
                     
                     <div class="axil-signin-form">
                         <br><br>
-                        <h3 class="title"> {{ \App\Helpers\TranslationHelper::TranslateText('Création de compte chez New Laptop Deals') }}</h3>
+                        <h3 class="title"> {{ \App\Helpers\TranslationHelper::TranslateText('Création de compte') }}</h3>
 
 
                         @livewire('front.register')
