@@ -25,20 +25,7 @@
                     {{ \App\Helpers\TranslationHelper::TranslateText('Détails') }}
                 </button>
 
-
-                <button type="button" class="axil-btn btn-bg-primary2"
-                    data-bs-toggle="modal"
-                    data-bs-target="#reservationModal"
-                    data-id="{{ $produit->id }}"
-                    data-nom="{{ $produit->nom }}">
-
-                    {{ \App\Helpers\TranslationHelper::TranslateText('Réserver') }}
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal Bootstrap des détails -->
+ <!-- Modal Bootstrap des détails -->
     <div class="modal fade" id="produitModal" tabindex="-1" aria-hidden="true" wire:ignore.self>
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content border-0 shadow">
@@ -50,13 +37,13 @@
                 <div class="modal-body">
                     <div class="row">
                         <!-- Image -->
-                      <div class="col-md-6 mb-3 mb-md-0">
-    @if($selectedProduit->photo)
-    <img src="{{ Storage::url($selectedProduit->photo) }}" class="img-fluid rounded w-100" style="height: 280px; object-fit: cover;" alt="{{ $selectedProduit->nom }}">
-    @else
-    <img src="{{ asset('icons/no-image.webp') }}" class="img-fluid rounded w-100" style="height: 280px; object-fit: cover;" alt="Aucune image">
-    @endif
-</div>
+                        <div class="col-md-6 mb-3 mb-md-0">
+                            @if($selectedProduit->photo)
+                            <img src="{{ Storage::url($selectedProduit->photo) }}" class="img-fluid rounded w-100" style="height: 280px; object-fit: cover;" alt="{{ $selectedProduit->nom }}">
+                            @else
+                            <img src="{{ asset('icons/no-image.webp') }}" class="img-fluid rounded w-100" style="height: 280px; object-fit: cover;" alt="Aucune image">
+                            @endif
+                        </div>
                         <!-- Infos -->
                         <div class="col-md-6">
                             <span class="badge bg-dark text-capitalize mb-2">{{ $selectedProduit->type_habitation }}</span>
@@ -98,6 +85,19 @@
     </script>
     @endscript
 
+                <button type="button" class="axil-btn btn-bg-primary2"
+                    data-bs-toggle="modal"
+                    data-bs-target="#reservationModal"
+                    data-id="{{ $produit->id }}"
+                    data-nom="{{ $produit->nom }}">
+
+                    {{ \App\Helpers\TranslationHelper::TranslateText('Réserver') }}
+                </button>
+            </div>
+        </div>
+    </div>
+
+   
 
     <!-- Modal Bootstrap pour la Réservation -->
     <div class="modal fade" id="reservationModal" tabindex="-1" aria-labelledby="reservationModalLabel" aria-hidden="true">
