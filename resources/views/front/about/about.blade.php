@@ -32,8 +32,7 @@
                                 }
                             </style>
                         </ul>
-                        <h1 class="title"> {{ \App\Helpers\TranslationHelper::TranslateText('A propos de notre boutique') }}</h1>
-                    </div>
+                        </div>
                 </div>
                 <style>
     .about-hero-img {

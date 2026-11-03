@@ -21,7 +21,8 @@
                 <!-- Bouton pour ouvrir le modal -->
                   <div class="d-flex gap-2 mt-auto">
                 <button type="button" class="axil-btn btn-bg-primary2" wire:click="voirDetails({{ $produit->id }})">
-                    Voir les détails
+                    
+                    {{ \App\Helpers\TranslationHelper::TranslateText('Détails') }}
                 </button>
 
 
@@ -30,7 +31,8 @@
                     data-bs-target="#reservationModal"
                     data-id="{{ $produit->id }}"
                     data-nom="{{ $produit->nom }}">
-                    Réserver
+                    
+                    {{ \App\Helpers\TranslationHelper::TranslateText('Réserver') }}
                 </button>
                 </div>
         </div>

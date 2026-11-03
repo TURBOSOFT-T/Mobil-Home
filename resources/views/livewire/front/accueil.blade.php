@@ -14,9 +14,10 @@
             <form action="{{ route('recherche') }}" method="GET" class="card shadow-sm border-0 p-4 mb-4 bg-light">
                  <div class="row g-3">
                     <div class="col-md-5">
-                <input type="text" name="key" class="form-control form-control-lg" placeholder="
-              {{ \App\Helpers\TranslationHelper::TranslateText('Rechercher par titre, ville, quartier...') }}  
-                ">
+                <input type="text" name="key" class="form-control form-control-lg" 
+                placeholder="{{ \App\Helpers\TranslationHelper::TranslateText('Rechercher un bien, un quartier...') }}">
+
+                  
                  </div>
                  <div class="col-md-4">
                 <select name="type" class="form-select text-capitalize" style="max-width: 200px;">
