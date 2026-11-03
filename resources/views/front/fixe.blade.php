@@ -6,6 +6,7 @@ $config = DB::table('configs')->first();
 @php
 $locales = [
 'fr' => ['name' => 'Français', 'flag' => 'https://img.icons8.com/color/20/france-circular.png'],
+'en' => ['name' => 'English', 'flag' => 'https://img.icons8.com/color/20/great-britain-circular.png'],
 
 ];
 $currentLocale = app()->getLocale();

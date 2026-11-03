@@ -8,8 +8,14 @@ $config = DB::table('configs')->first();
 <div class="container py-5">
     <div class="row mb-4">
         <div class="col-md-12 text-center">
-            <h2 class="fw-bold">🔍 Recherche de biens immobiliers</h2>
-            <p class="text-muted">Trouvez le logement ou le terrain qui vous correspond</p>
+            <h2 class="fw-bold">🔍 
+                 {{ \App\Helpers\TranslationHelper::TranslateText('Recherche de biens immobiliers') }} .</h3>
+          
+            </h2>
+            <p class="text-muted">
+             {{ \App\Helpers\TranslationHelper::TranslateText(' Trouvez le logement ou le terrain qui vous correspond') }} .</h3>
+              
+           </p>
         </div>
     </div>
 
@@ -18,13 +24,18 @@ $config = DB::table('configs')->first();
         <div class="row g-3">
             <!-- Recherche par mot-clé -->
             <div class="col-md-3">
-                <label class="form-label fw-bold">Mot-clé / Quartier</label>
-                <input type="text" name="key" value="{{ request('key') }}" class="form-control" placeholder="Ex: Villa de luxe, Douala...">
+                <label class="form-label fw-bold">
+                    {{ \App\Helpers\TranslationHelper::TranslateText('Mot-clé') }}
+                </label>
+                <input type="text" name="key" value="{{ request('key') }}" class="form-control" placeholder="Ex: Villa de luxe...">
             </div>
 
             <!-- Filtrer par type d'habitation -->
             <div class="col-md-3">
-                <label class="form-label fw-bold">Type d'habitation</label>
+                <label class="form-label fw-bold">
+                     {{ \App\Helpers\TranslationHelper::TranslateText('Type d\'habitation') }} .</h3>
+          
+                </label>
                 <select name="type" class="form-select text-capitalize">
                     <option value="">Tous les types</option>
                     <option value="appartement" @selected(request('type')=='appartement' )>Appartement</option>
@@ -99,7 +110,10 @@ $config = DB::table('configs')->first();
         </div>
         @empty
         <div class="col-12 text-center py-5">
-            <h5 class="text-muted">Aucun bien immobilier ne correspond à vos critères de recherche.</h5>
+            <h5 class="text-muted">
+                 {{ \App\Helpers\TranslationHelper::TranslateText('Aucun bien immobilier ne correspond à vos critères de recherche.') }} .</h3>
+          
+            </h5>
         </div>
         @endforelse
     </div>

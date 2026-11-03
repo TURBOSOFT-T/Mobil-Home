@@ -2,31 +2,61 @@
 
 <div class="row mb-5 text-center bg-light p-5 rounded shadow-sm">
         <div class="col-lg-8 mx-auto">
-            <h1 class="fw-bold mb-3">Trouvez votre bien immobilier idéal</h1>
-            <p class="text-muted mb-4">Appartements, villas, studios et terrains disponibles</p>
+            <h1 class="fw-bold mb-3">
+                 {{ \App\Helpers\TranslationHelper::TranslateText('Trouvez votre bien immobilier idéal') }} .</h3>
+          
+            </h1>
+            <p class="text-muted mb-4">
+                 {{ \App\Helpers\TranslationHelper::TranslateText('Appartements, villas, studios et terrains disponibles') }} .</h3>
+          
+            </p>
             
             <form action="{{ route('recherche') }}" method="GET" class="card shadow-sm border-0 p-4 mb-4 bg-light">
                  <div class="row g-3">
                     <div class="col-md-5">
-                <input type="text" name="key" class="form-control form-control-lg" placeholder="Rechercher par titre, ville, quartier...">
+                <input type="text" name="key" class="form-control form-control-lg" placeholder="
+              {{ \App\Helpers\TranslationHelper::TranslateText('Rechercher par titre, ville, quartier...') }}  
+                ">
                  </div>
                  <div class="col-md-4">
                 <select name="type" class="form-select text-capitalize" style="max-width: 200px;">
-                    <option value="">Tous les types</option>
-                    <option value="appartement">Appartement</option>
-                    <option value="villa">Villa</option>
-                    <option value="studio">Studio</option>
-                    <option value="terrain">Terrain</option>
-                    <option value="duplex">Duplex</option>
-                    <option value="commerce">Commerce</option>
-                    <option value="chambre">Chambre</option>
-                    <option value="boutique">Boutique</option>
-                    <option value="maison">Maison</option>
+                    <option value=""> {{ \App\Helpers\TranslationHelper::TranslateText('Type habitation') }} .</h3>
+          </option>
+                    <option value="appartement">
+                         {{ \App\Helpers\TranslationHelper::TranslateText('Appartement') }} .</h3>
+          
+                    </option>
+                    <option value="villa">
+                        {{ \App\Helpers\TranslationHelper::TranslateText('Villa') }} .</h3>
+                    </option>
+                    <option value="studio">
+                        {{ \App\Helpers\TranslationHelper::TranslateText('Studio') }} .</h3>
+                    </option>
+                    <option value="terrain">
+                        {{ \App\Helpers\TranslationHelper::TranslateText('Terrain') }} .</h3>
+                    </option>
+                    <option value="duplex">
+                        {{ \App\Helpers\TranslationHelper::TranslateText('Duplex') }} .</h3>
+                    </option>
+                    <option value="commerce">
+                        {{ \App\Helpers\TranslationHelper::TranslateText('Commerce') }} .</h3>
+                    </option>
+                    <option value="chambre">
+                        {{ \App\Helpers\TranslationHelper::TranslateText('Chambre') }} .</h3>
+                    </option>
+                    <option value="boutique">
+                        {{ \App\Helpers\TranslationHelper::TranslateText('Boutique') }} .</h3>
+                    </option>
+                    <option value="maison">
+                        {{ \App\Helpers\TranslationHelper::TranslateText('Maison') }} .</h3>
+                    </option>
                        
                 </select>
                     </div>
                  <div class="col-md-3 d-flex align-items-end gap-2">
-                <button class="axil-btn btn-bg-primary2" type="submit">Rechercher</button>
+                <button class="axil-btn btn-bg-primary2" type="submit">
+                    {{ \App\Helpers\TranslationHelper::TranslateText('Rechercher') }}
+                </button>
                  </div>
                  </div>
             </form>
