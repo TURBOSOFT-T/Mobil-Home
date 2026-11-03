@@ -71,34 +71,17 @@ $produit = DB::table('produits')->get();
 
 
     @include('front.components.banner')
-    @include('front.components.nouveautes')
-    @include('front.components.bestseller')
-
-    @include('front.components.promo')
-
-
-    @include('front.components.produits')
-
-    @if ($produitshome)
-    @foreach ($produitshome as $key => $produit)
-    @include('front.components.modal')
-    @endforeach
-    @endif
-
-
-
+    
+    @livewire('front.accueil')
 
     @include('front.components.stat')
 
     <!-- End About Area  -->
 
 
-    @include('front.components.promotion')
     <!-- End Expolre Product Area  -->
     @include('front.components.testimonials')
 
-    @include('front.components.mostviews')
-    @include('front.components.category')
 </main>
 
 

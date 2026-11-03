@@ -185,63 +185,7 @@ $config = DB::table('configs')->select('icon', 'logo')->first();
                     </a>
                 </li>
 
-
-                <li>
-                    <a href="{{ route('marques') }}">
-                        <div class="parent-icon icon-color-3"> <i class="ri-boxing-fill"></i>
-                        </div>
-                        <div class="menu-title">
-                            Les marques
-                        </div>
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ route('transports') }}">
-                        <div class="parent-icon icon-color-3">
-                            <i class="ri-truck-fill"></i>
-                        </div>
-                        <div class="menu-title">
-                            Les frais de transport
-                        </div>
-                    </a>
-                </li>
-
-                @can('coupon_view')
-                <li>
-                    <a href="javascript:;" class="has-arrow">
-                        <div class="parent-icon icon-color-3"> <i class="ri-coupon-3-line"></i> </div>
-
-                        <div class="menu-title">
-                            Les codes promo
-                        </div>
-                    </a>
-                    <ul>
-                        <li>
-                            <a href="{{ route('coupons') }}">
-                                <i class="bx bx-right-arrow-alt"></i>
-                                Liste des coupons
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ route('coupon.add') }}">
-                                <i class="bx bx-right-arrow-alt"></i>
-                                Créer un coupon
-                            </a>
-                        </li>
-
-
-                    </ul>
-                </li>
-                @endcan
-                {{-- <li>
-                    <a href="{{ route('marques') }}">
-                <div class="parent-icon icon-color-3"> <i class="ri-boxing-fill"></i>
-                </div>
-                <div class="menu-title">
-                    Les marques
-                </div>
-                </a>
-                </li> --}}
+            
 
 
 
@@ -269,14 +213,7 @@ $config = DB::table('configs')->select('icon', 'logo')->first();
                             </a>
                         </li>
                         @endcan
-                        @can('product_edit')
-                        <li>
-                            <a href="{{ route('promotions') }}">
-                                <i class="bx bx-right-arrow-alt"></i>
-                                Gestion des promotions
-                            </a>
-                        </li>
-                        @endcan
+                        
 
                     </ul>
                 </li>
@@ -286,7 +223,7 @@ $config = DB::table('configs')->select('icon', 'logo')->first();
 
                 @can('order_view')
                 <li>
-                    <a href="javascript:;" class="has-arrow">
+                    <a  href="{{ route('commandes') }}">
                         <div class="parent-icon icon-color-4">
                             <i class="ri-truck-line"></i>
                         </div>
@@ -294,32 +231,7 @@ $config = DB::table('configs')->select('icon', 'logo')->first();
                             Commandes
                         </div>
                     </a>
-                    <ul>
-                        <li>
-                            <a href="{{ route('commandes') }}">
-                                <i class="bx bx-right-arrow-alt"></i>
-                                Toutes les commandes
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ route('commandes_en_lives') }}">
-                                <i class="bx bx-right-arrow-alt"></i>
-                                Commandes en cours
-                            </a>
-                        </li>
-
-                       <!--  @can('live_order_view')
-                        <li>
-                            <a href="{{ route('commandes_commercial') }}">
-                                <i class="bx bx-right-arrow-alt"></i>
-                                Les commandes avec commercial
-                            </a>
-                        </li>
-                        @endcan
- -->
-
-
-                    </ul>
+                  
                 </li>
                 @endcan
                 <li>

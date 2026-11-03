@@ -29,8 +29,8 @@
                 <tr>
                     <th>Nom</th>
                     <th>Prénom</th>
-                      <th>Solde</th>
-                    <th>Points</th>
+                    
+                    
                     <th>Phone</th>
                     <th>Adresse</th>
                    
@@ -55,17 +55,8 @@
                             {{ $client->prenom }}
                         </td>
 
-                         <td class="cusor">
-                            {{ $client->solde ?? 0 }} <x-devise></x-devise>
-                        </td>
 
-                        <td class="cusor">
-                            {{ $client->points }}<x-devise></x-devise>
-                            <span class="text-success">
-                                ({{ $client->points ?? 0 }})
-                                pts
-                            </span>
-                        </td>
+                       
                         <td>
                             {{ $client->phone }}
                         </td>
@@ -76,25 +67,10 @@
                         <td>{{ $client->created_at }} </td>
                         <td style="text-align: right;">
 
-                             
-                             <button class="btn btn-dark btn-sm" title="Voir Historique" type="button"
-                                wire:click="openPointsHistoryModal({{ $client->id }})">
-                                <i class="fas fa-history"></i> Points
-                            </button>
-                            <button class="btn btn-info btn-sm" title="Voir Historique" type="button"
-                                wire:click="openTransactionHistoryModal({{ $client->id }})">
-                                <i class="fas fa-history"></i> Historique
-                            </button>
-
-                            <button class="btn btn-primary btn-sm" title="Ajouter solde"
-                                wire:click="openModal({{ $client->id }})">
-                                <i class="fas fa-plus"></i>
-                            </button>
+                        
                             @can('clients_view')
                                 <div class="btn-group">
-                                    {{-- <button class="btn btn-sm btn-primary" type="button">
-                                        <i class="ri-phone-fill"></i> Appeler
-                                    </button> --}}
+                                   
                                     <button class="btn btn-sm btn-danger"
                                         onclick="toggle_confirmation({{ $client->id }})">
                                         <i class="ri-delete-bin-6-line"></i>

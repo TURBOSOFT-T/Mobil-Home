@@ -14,9 +14,7 @@ class HomeComposer
       //  'categories' => Category::has('produits')->take(8)->get(),
       //  'categories' => Category::has('produits')->take(8)->get(), // Pour la catégorie page
       'categories' => Category::has('produits')->get(), // Pour la catégorie page
-      'searchproducts' => produits::select('*')->latest()->take(5)->get(),
-      'lastproduits' => produits::orderBy('created_at', 'desc')->take(12)->get(),
-      'marques' => Marque::has('produits')->get(),
+     
       'produitshome' => produits::select('*')->latest()->take(12)->get(),
       'testimonials' => Testimonial::orderBy('created_at', 'desc')
         ->where('active', '1')
@@ -30,16 +28,7 @@ class HomeComposer
       'favoris' => Favoris::where('id_produit', '!=', null)
         ->where('id_user', auth()->id())->get(),
 
-      'produitsPromo' => produits::whereNotNull('id_promotion')
-        ->latest()
-        ->take(6)
-        ->get(),
-
-        
-      'produitsPromos' => produits::whereNotNull('id_promotion')
-        ->latest()
-        ->take(20)
-        ->get(),
+   
 
       // 🆕 NOUVEAUTÉS
       'nouveautes' => produits::where('is_new', 1)
@@ -54,12 +43,7 @@ class HomeComposer
         ->take(30)
         ->get(),
 
-      // 🏆 BEST SELLERS
-      'bestSellers' => produits::withSum('vendus', 'quantite')
-        ->orderByDesc('vendus_sum_quantite')
-        ->having('vendus_sum_quantite', '>', 0)
-        ->take(30)
-        ->get(),
+  
     ]);
   }
 }

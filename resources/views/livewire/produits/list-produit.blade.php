@@ -10,7 +10,7 @@
             <div class="col-sm-6">
                 <div class="input-group mb-3">
                     <input type="text" class="form-control btn-sm" wire:model="key"
-                        placeholder="Titre,Description des articles">
+                        placeholder="Rechercher par titre, ville, quartier...">
                     <div class="input-group-append">
                         <button class="btn btn-primary" type="submit">
                             Filtrer
@@ -21,34 +21,29 @@
         </div>
     </form>
 
-
     @include('components.alert')
 
     <div class="table-responsive-sm">
         <table id="basic-datatable" class="table table-striped dt-responsive nowrap w-100">
             <thead class="table-dark cusor">
                 <tr>
-                    <th title="Ajouter un produit dans la bannier de l'accueil">
+                    <th title="Mettre en avant / Coup de cœur">
                         Top
                     </th>
                     <th>Photo</th>
-                    <th>Nom</th>
-                    <th>Stock</th>
-                    <th>Prix vente</th>
-                    <th>Prix achat</th>
-                    <th>Sell</th>
-                    <th>Vues</th>
+                    <th>Nom du bien</th>
+                    <th>Type</th>
+                    <th>Disponibilité</th>
+                    <th>Prix / Loyer</th>
                     <th>Commission</th>
-                    <th>création</th>
+                    <th>Création</th>
                     <th style="text-align: right;">
                         <span wire:loading>
-                            <img src="https://i.gifer.com/ZKZg.gif" width="20" height="20" class="rounded shadow"
-                                alt="">
+                            <img src="https://i.gifer.com/ZKZg.gif" width="20" height="20" class="rounded shadow" alt="">
                         </span>
                     </th>
                 </tr>
             </thead>
-
 
             <tbody>
                 @forelse ($produits as $produit)
@@ -58,224 +53,211 @@
                         wire:click="add_top({{ $produit->id }})">
                     </td>
                     <td>
-                        <img src="{{ Storage::url($produit->photo) }}" width="40 " height="40 "
+                        <img src="{{ Storage::url($produit->photo) }}" width="40" height="40"
                             class="rounded shadow" alt="">
                     </td>
                     <td>
-                        <button class="btn btn-sm btn-outline" data-bs-toggle="modal"
-                            data-bs-target="#qr-code-{{ $produit->id }}">
-                            <i class="ri-qr-code-line"></i>
+                        <!-- Bouton pour ouvrir la modale de détails -->
+                        <button class="btn btn-sm btn-info text-white" title="Voir les détails" data-bs-toggle="modal"
+                            data-bs-target="#details-produit-{{ $produit->id }}">
+                            <i class="ri-eye-line"></i>
                         </button>
-
                         {{ $produit->nom }}
                     </td>
 
+                    <td>
+                        <span class="badge bg-info text-dark text-capitalize">
+                            {{ $produit->type_habitation ?? 'Appartement' }}
+                        </span>
+                    </td>
+
                     <td class="cursor">
-                        @if ($produit->stock > 20)
-                        <span class="text-success" title="En Stock">
+                        @if ($produit->statut == 'disponible')
+                        <span class="text-success" title="Disponible">
                             <i class="fas fa-check-circle"></i>
-                            <span class="badge bg-success">En Stock</span>
-                            {{ $produit->stock }} U.
+                            <span class="badge bg-success">Disponible</span>
                         </span>
-
-                        @elseif ($produit->stock > 0 && $produit->stock <= 20)
-                            <span title="{{ $produit->stock }} Produit(s) en stock pour le moment">
-                            {{ $produit->stock }} U.
-                            <span class="badge" style="background-color: #e0d600; color: #fff;">
-                                Alerte Stock Bas
-                            </span>
-                            </span>
-
-                            @else
-                            <span class="text-danger" title="Rupture de Stock">
-                                <i class="fas fa-times-circle"></i>
-                                <span class="badge bg-danger">Rupture</span>
-                            </span>
-                            @endif
-                    </td>
-
-
-
-
-                    <td>
-                        @if ($produit->inPromotion())
-                        <span class=" small">
-                            - {{ $produit->inPromotion()->pourcentage }} %
+                        @elseif ($produit->statut == 'loue')
+                        <span class="text-warning" title="Loué">
+                            <span class="badge bg-warning text-dark">Loué</span>
                         </span>
-                        <b class="text-success">
-                            {{ $produit->getPrice() }} <x-devise></x-devise>
-                        </b>
-                        <br>
-                        <strike>
-                            <span class="text-danger small">
-                                {{ $produit->prix }} <x-devise></x-devise>
-                            </span>
-                        </strike>
+                        @elseif ($produit->statut == 'vendu')
+                        <span class="text-info" title="Vendu">
+                            <span class="badge bg-info">Vendu</span>
+                        </span>
                         @else
-                        {{ $produit->getPrice() }} <x-devise></x-devise>
+                        <span class="text-danger" title="Indisponible">
+                            <i class="fas fa-times-circle"></i>
+                            <span class="badge bg-danger">Indisponible</span>
+                        </span>
                         @endif
+                    </td>
 
-                    </td>
-                    <td>{{ $produit->prix_achat }} <x-devise></x-devise></td>
                     <td>
-                        <i class="ri-wallet-2-line vert"></i>
-                        {{ $produit->vendus->count() }}
+                        <b>{{ number_format($produit->prix, 0, ',', ' ') }}</b> <x-devise></x-devise>
+                    </td>
 
-                    </td>
-                    <td>
-                        <i class="ri-bar-chart-box-line vert"></i>
-                        {{ $produit->vues->count() }}
-                    </td>
                     <td>
                         @if($produit->avec_commission)
-                        {{ $produit->commission }} <x-devise></x-devise>
+                        {{ number_format($produit->commission, 0, ',', ' ') }} <x-devise></x-devise>
                         @else
                         <span class="badge bg-secondary">Pas de commission</span>
                         @endif
                     </td>
-                    <td>{{ $produit->created_at->format('d/m/Y') }} </td>
+                    <td>{{ $produit->created_at->format('d/m/Y') }}</td>
 
                     <td style="text-align: right;">
                         <div class="btn-group">
 
-                            @if ($produit->stock < 20)
-                                {{--                 <b title="Historique"
-                                        onclick="window.location.href='{{ route('produits.historique', ['id' => $produit->id]) }}'">
+                        <!-- Bouton de bascule de statut (Disponible / Indisponible) -->
+<button type="button" 
+    class="btn btn-sm {{ $produit->statut == 'disponible' ? 'btn-outline-danger' : 'btn-outline-success' }}" 
+    wire:click="toggleStatut({{ $produit->id }})"
+    title="{{ $produit->statut == 'disponible' ? 'Rendre indisponible' : 'Rendre disponible' }}">
+    <i class="{{ $produit->statut == 'disponible' ? 'ri-eye-off-line' : 'ri-eye-line' }}"></i>
+    {{ $produit->statut == 'disponible' ? 'Indisponible' : 'Rendre disponible' }}
+</button>
 
-                                <i class="fas fa-history"></i>
-                                </b --}}
+                            <button class="btn btn-sm btn-info text-white" title="Voir les détails" data-bs-toggle="modal" data-bs-target="#details-produit-{{ $produit->id }}">
+                                <i class="ri-eye-line"></i>
+                            </button>
+                            <button class="btn btn-sm btn-dark"
+                                onclick="url(' {{ route('produits.update', ['id' => $produit->id]) }} ')">
+                                <i class="ri-edit-box-line"></i>
+                            </button>
 
-                                    <button class="btn btn-primary btn-sm" title="Ajouter Stock"
-                                    wire:click="openModal({{ $produit->id }})">
-                                <i class="fas fa-plus"></i>
-                                </button>
-                                @endif
 
-                                <button class="btn btn-sm btn-dark"
-                                    onclick="url(' {{ route('produits.update', ['id' => $produit->id]) }} ')">
-                                    <i class="ri-edit-box-line"></i>
-                                </button>
-                                @can('product_edit')
-                                <button class="btn btn-sm btn-warning" title="Promotion"
-                                    onclick="url('{{ route('promotions_produit', ['id' => $produit->id]) }}')">
-                                    <i class="ri-discount-percent-fill"></i>
-                                </button>
-                                @endcan
-                                {{-- <button class="btn btn-sm btn-info">
-                                    <i class="ri-links-line"></i>
-                                </button> --}}
-                                @can('product_delete')
-                                <button class="btn btn-sm btn-danger"
-                                    onclick="toggle_confirmation({{ $produit->id }})">
-                                    <i class="ri-delete-bin-6-line"></i>
-                                </button>
-                                @endcan
+                            @can('product_delete')
+                            <button class="btn btn-sm btn-danger"
+                                onclick="toggle_confirmation({{ $produit->id }})">
+                                <i class="ri-delete-bin-6-line"></i>
+                            </button>
+                            @endcan
                         </div>
 
-                        <!-- Center modal content -->
-                        <div class="modal fade" id="qr-code-{{ $produit->id }}" tabindex="-1" role="dialog"
-                            aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h6 class="modal-title" id="myCenterModalLabel">
-                                            Accès rapide au produit
-                                        </h6>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                            aria-label="Close"></button>
+                        <!-- Modal des détails complets du bien -->
+                        <div class="modal fade" id="details-produit-{{ $produit->id }}" tabindex="-1" role="dialog" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered modal-lg">
+                                <div class="modal-content text-start">
+                                    <div class="modal-header bg-light">
+                                        <h5 class="modal-title">
+                                            Détails du bien : <strong>{{ $produit->nom }}</strong>
+                                        </h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
-                                        <table class="table" style="text-align: left;">
-                                            <tr>
-                                                <td>Prix d'acaht :</td>
-                                                <td>{{ $produit->prix_achat }} <x-devise></x-devise></td>
-                                            </tr>
-                                            <tr>
-                                                <td>Bénéfce / produit :</td>
-                                                <td> {{ $produit->prix - $produit->prix_achat }}
-                                                    <x-devise></x-devise>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>Réference :</td>
-                                                <td>
-                                                    {{ $produit->reference }}
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>Stock : </td>
-                                                <td class="d-flex justify-content-between">
-                                                    <span>
-                                                        {{ $produit->stock }} U.
-                                                    </span>
-                                                    <b class="cusor"
-                                                        onclick="url('{{ route('produits.historique', ['id' => $produit->id]) }}')">
-                                                        <i class="ri-history-fill"></i>
-                                                        Historique
-                                                    </b>
-                                                </td>
-                                            </tr>
-                                        </table>
-                                        <br>
-                                        <div class="text-center p-2">
-                                            {{-- {!! QrCode::size(100)->generate(route('produit2', ['id' => $produit->id])) !!} --}}
+                                        <div class="row">
+                                            <!-- Image principale -->
+                                            <div class="col-md-5 text-center mb-3">
+                                                @if ($produit->photo)
+                                                <img src="{{ Storage::url($produit->photo) }}" alt="{{ $produit->nom }}" class="img-fluid rounded shadow-sm" style="max-height: 220px; object-fit: cover;">
+                                                @else
+                                                <img src="/icons/no-image.webp" alt="Aucune image" class="img-fluid rounded shadow-sm" style="max-height: 220px;">
+                                                @endif
+                                            </div>
+
+                                            <!-- Informations principales -->
+                                            <div class="col-md-7">
+                                                <table class="table table-sm table-borderless">
+                                                    <tr>
+                                                        <td class="fw-bold">Type d'habitation :</td>
+                                                        <td class="text-capitalize"><span class="badge bg-secondary">{{ $produit->type_habitation }}</span></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="fw-bold">Prix / Loyer :</td>
+                                                        <td class="text-success fw-bold">{{ number_format($produit->prix, 0, ',', ' ') }} <x-devise></x-devise></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="fw-bold">Commission :</td>
+                                                        <td>
+                                                            @if($produit->avec_commission)
+                                                            <span class="badge bg-success">{{ number_format($produit->commission, 0, ',', ' ') }} <x-devise></x-devise></span>
+                                                            @else
+                                                            <span class="badge bg-dark">Aucune</span>
+                                                            @endif
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="fw-bold">Statut :</td>
+                                                        <td class="text-capitalize">
+                                                            <span class="badge bg-{{ $produit->statut == 'disponible' ? 'success' : 'warning' }}">
+                                                                {{ $produit->statut ?? 'Disponible' }}
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="fw-bold">Ajouté le :</td>
+                                                        <td>{{ $produit->created_at->format('d/m/Y à H:i') }}</td>
+                                                    </tr>
+                                                </table>
+                                            </div>
                                         </div>
+
+                                        <hr>
+
+                                        <!-- Description complète -->
+                                        <div class="mt-2">
+                                            <h6 class="fw-bold">Description :</h6>
+                                            <div class="p-3 bg-light rounded text-muted" style="max-height: 150px; overflow-y: auto;">
+                                                {!! $produit->description ?? 'Aucune description fournie.' !!}
+                                            </div>
+                                        </div>
+
+                                        <!-- Caractéristiques spécifiques (si présentes) -->
+                                        @if(!empty($produit->caracteristiques) && is_array($produit->caracteristiques))
+                                        <div class="mt-3">
+                                            <h6 class="fw-bold">Caractéristiques / Commodités :</h6>
+                                            <ul class="list-group list-group-flush">
+                                                @foreach($produit->caracteristiques as $carac)
+                                                @if(!empty($carac['cle']) && !empty($carac['valeur']))
+                                                <li class="list-group-item d-flex justify-content-between align-items-center py-1 px-2">
+                                                    <span>{{ $carac['cle'] }}</span>
+                                                    <span class="fw-bold text-dark">{{ $carac['valeur'] }}</span>
+                                                </li>
+                                                @endif
+                                                @endforeach
+                                            </ul>
+                                        </div>
+                                        @endif
                                     </div>
-                                </div><!-- /.modal-content -->
-                            </div><!-- /.modal-dialog -->
-                        </div><!-- /.modal -->
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Fermer</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
                         <button class="btn btn-sm btn-success d-none" type="button"
                             id="confirmBtn{{ $produit->id }}" wire:click="delete({{ $produit->id }})">
                             <i class="bi bi-check-circle"></i>
-                            <span class="hide-tablete">
-                                Confirmer
-                            </span>
+                            <span>Confirmer</span>
                         </button>
                     </td>
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="10" class="text-center">
+                    <td colspan="9" class="text-center py-4">
                         <div>
-                            <img src="/icons/icons8-ticket-100.png" height="100" width="100" alt=""
-                                srcset="">
+                            <img src="/icons/icons8-ticket-100.png" height="80" width="80" alt="">
                         </div>
-                        Aucun produit trouvé
+                        Aucun bien immobilier trouvé
                     </td>
                 </tr>
                 @endforelse
-
             </tbody>
-
-
         </table>
     </div>
+
     {{ $produits->links('pagination::bootstrap-4') }}
 
     @role('admin')
     <div class="text-end p-2">
         <a href="{{ route('corbeille') }}" class="text-danger">
             <i class="ri-delete-bin-line"></i>
-            Corbeile ( {{ $total_supprimers }} )
+            Corbeille ( {{ $total_supprimers }} )
         </a>
     </div>
     @endrole
-    {{-- <script>
-        function handleSelectChange(productId, value) {
-            if (value === 'historique') {
-               
-               
-
-                window.location.href = `{{ route('produits.historique', ['id' => $produit->id]) }}${productId}`;
-
-
-    } else {
-    updateStockStatus(productId, value);
-    }
-    }
-    </script> --}}
-
 
     <style>
         .badge {
@@ -284,53 +266,6 @@
             color: white;
             font-weight: bold;
         }
-
-        .badge-success {
-            background-color: green;
-        }
-
-        .badge-danger {
-            background-color: red;
-        }
     </style>
-
-
-
-
-    @if ($showModal)
-    <div class="modal fade show" style="display: block;" tabindex="-1" role="dialog">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Ajouter Stock pour {{ $selectedProduit }}</h5>
-                    <button type="button" class="btn-close" wire:click="$set('showModal', false)"
-                        aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form wire:submit.prevent="addStock">
-                        <div class="mb-3">
-                            <label for="stock" class="form-label">Quantité à ajouter</label>
-                            <input type="number" id="stock" wire:model="stock" class="form-control"
-                                min="1">
-                            @error('stock')
-                            <span class="text-danger">{{ $message }}</span>
-                            @enderror
-                        </div>
-                        <button type="submit" class="btn btn-primary">Ajouter</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-    @endif
-    <script>
-        document.addEventListener('livewire:load', function() {
-            Livewire.on('openModal', () => {
-                var modal = new bootstrap.Modal(document.getElementById('add-stock-modal'));
-                modal.show();
-            });
-        });
-    </script>
-
 
 </div>

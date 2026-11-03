@@ -9,7 +9,7 @@ $config = DB::table('configs')->first();
 <head>
     @section('SEO')
     <meta name="description" content="{{ $produit->description ?? ' ' }}">
-    <meta name="author" content="new-laptop-deals.com">
+    <meta name="author" content="home-dmbj.fr">
     <meta property="og:title" content="{{ $produit->nom }}">
     <meta property="og:description" content="{{ $produit->description ?? '' }}">
 

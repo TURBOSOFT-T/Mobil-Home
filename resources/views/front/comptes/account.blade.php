@@ -12,9 +12,8 @@
         <div class="container">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="index.html"> {{ \App\Helpers\TranslationHelper::TranslateText('Accueil') }}</a></li>
-                    <li class="breadcrumb-item active" aria-current="page"> {{ \App\Helpers\TranslationHelper::TranslateText('Boutique') }}</li>
-                    <li class="breadcrumb-item active" aria-current="page"> {{ \App\Helpers\TranslationHelper::TranslateText('Mon compte') }}</li>
+                    <li class="breadcrumb-item"><a href="#"> {{ \App\Helpers\TranslationHelper::TranslateText('Accueil') }}</a></li>
+                     <li class="breadcrumb-item active" aria-current="page"> {{ \App\Helpers\TranslationHelper::TranslateText('Mon compte') }}</li>
                 </ol>
             </nav>
         </div>
@@ -30,24 +29,9 @@
                             <nav class="axil-dashboard-nav">
                                 <div class="nav nav-tabs" role="tablist">
                                     <a class="nav-item nav-link active" data-bs-toggle="tab" href="#nav-dashboard" role="tab" aria-selected="true"><i class="fas fa-th-large"></i>Dashboard</a>
-                                    <a class="nav-item nav-link" data-bs-toggle="tab" href="#nav-orders" role="tab" aria-selected="false"><i class="fas fa-shopping-basket"></i> {{ \App\Helpers\TranslationHelper::TranslateText('Mes commandes') }}</a>
-                                    <a class="nav-item nav-link" data-bs-toggle="tab" href="#nav-downloads" role="tab" aria-selected="false"><i class="fas fa-file-download"></i> {{ \App\Helpers\TranslationHelper::TranslateText('Mes favoris') }}</a>
+                                    <a class="nav-item nav-link" data-bs-toggle="tab" href="#nav-orders" role="tab" aria-selected="false"><i class="fas fa-shopping-basket"></i> {{ \App\Helpers\TranslationHelper::TranslateText('Mes réservations') }}</a>
                                     <a class="nav-item nav-link" data-bs-toggle="tab" href="#nav-account" role="tab" aria-selected="false"><i class="fas fa-user"></i> {{ \App\Helpers\TranslationHelper::TranslateText('Mon profile') }}</a>
-                                  <!--   <a class="nav-item nav-link"
-                                        data-bs-toggle="tab"
-                                        href="#nav-points">
-                                        <i class="fas fa-star"></i>
-                                        {{ \App\Helpers\TranslationHelper::TranslateText('Historique des points') }}
-                                    </a>
-
-                                    
-                                    <a class="nav-item nav-link"
-                                        data-bs-toggle="tab"
-                                        href="#nav-wallet">
-                                        <i class="fas fa-wallet"></i>
-                                        {{ \App\Helpers\TranslationHelper::TranslateText('Historique du solde') }}
-                                    </a>
-                                 -->    <a class="nav-item nav-link" href="{{ route('logout') }}"
+                                   <a class="nav-item nav-link" href="{{ route('logout') }}"
                                         onclick="event.preventDefault();   document.getElementById('logout-form').submit();"><i class="fal fa-sign-out"></i>
                                         <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                                             @csrf
@@ -69,12 +53,12 @@
 
 
                                             <div class="row pt-1 g-1">
-                                                <div class="col-md-4 col-sm-6">
+                                                <div class="col-md-6 col-sm-6">
                                                     <div class="dashboard-card hover-border1 wow fadeInDown"
                                                         data-wow-duration="1.5s" data-wow-delay=".2s">
                                                         <div class=" header">
                                                             <h5>
-                                                                {{ \App\Helpers\TranslationHelper::TranslateText('Total commandes') }}
+                                                                {{ \App\Helpers\TranslationHelper::TranslateText('Total réservations') }}
                                                             </h5>
                                                         </div>
 
@@ -98,12 +82,12 @@
                                                     </div>
 
                                                 </div>
-                                                <div class="col-md-4 col-sm-6">
+                                                <div class="col-md-6 col-sm-6">
                                                     <div class="dashboard-card hover-border1 wow fadeInDown"
                                                         data-wow-duration="1.5s" data-wow-delay=".4s">
                                                         <div class="header">
                                                             <h5>
-                                                                {{ \App\Helpers\TranslationHelper::TranslateText('Commandes en cours') }}
+                                                                {{ \App\Helpers\TranslationHelper::TranslateText('Réservations en cours') }}
                                                             </h5>
                                                         </div>
                                                         <div class=" row body">
@@ -122,68 +106,11 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-4 col-sm-6">
-                                                    <div class="dashboard-card hover-border1 wow fadeInDown"
-                                                        data-wow-duration="1.5s" data-wow-delay=".6s">
-                                                        <div class="header">
-                                                            <h5> {{ \App\Helpers\TranslationHelper::TranslateText('Mes favoris') }}</h5>
-                                                        </div>
-                                                        <div class=" row body">
-                                                            <div class="col-sm-6 col-6 counter-item">
-                                                                <h2>{{ $totalFavoris ?? '00' }}</h2>
-                                                            </div>
-                                                            <div class=" col-sm-6 col-6 icon">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" width="50"
-                                                                    height="50" viewBox="0 0 50 50">
-                                                                    <path
-                                                                        d="M24.3996 0.153577C23.4061 0.353602 22.2926 0.863666 21.1245 1.66377C20.0873 2.38386 19.4214 3.14395 18.8428 4.3141C18.0895 5.80428 18.1223 5.25421 18.1223 17.8158V29.1472L15.9061 29.1572C14.0611 29.1772 13.559 29.2072 12.8493 29.3872C9.869 30.1073 7.69651 32.1576 6.99782 34.8979C6.79039 35.698 6.76856 36.0881 6.76856 39.5585C6.76856 43.699 6.74672 43.8891 6.11354 45.0592C5.69869 45.8393 4.49782 46.9894 3.74454 47.3395C2.96943 47.6895 2.06332 47.8996 1.24454 47.8996C0.665939 47.8996 0.534934 47.9396 0.283843 48.1596C0.0545852 48.3796 0 48.5196 0 48.9197C0 49.3297 0.0545852 49.4598 0.316594 49.7098L0.633188 49.9998H12.7183C26.1463 49.9998 25.6004 50.0298 27.1507 49.3197C29.0175 48.4796 30.3384 47.2895 31.1245 45.7693C31.7358 44.5591 31.7686 44.3491 31.7686 40.7687V37.4983H36.0153H40.262L40.6004 37.2082L40.9389 36.9182V22.6264V8.3446L44.8362 8.37461C49.0284 8.40461 49.3886 8.37461 49.7707 7.92455C49.9782 7.68452 50 7.5345 50 5.9443C50 4.08407 49.8908 3.534 49.3777 2.6939C48.9847 2.07382 47.6638 0.923674 46.9432 0.593632C45.5786 -0.0364465 46.0808 -0.00644271 35.131 0.00355854C26.7576 0.00355854 25.0437 0.0335623 24.3996 0.153577ZM39.5633 2.36385C39.2358 2.82391 38.952 3.41399 38.7991 3.94405C38.679 4.3541 38.6463 6.88442 38.6463 17.3057V30.1773L37.9476 29.8373C36.4738 29.1172 37.0306 29.1572 28.3515 29.1272L20.5131 29.0972V17.7158L20.5022 6.34435L20.786 5.64426C21.4847 3.95405 22.9258 2.68389 24.6725 2.23384C25.0437 2.14383 26.9869 2.11382 32.4672 2.10382L39.7598 2.09382L39.5633 2.36385ZM45.5677 2.29385C46.2773 2.56388 47.0852 3.29397 47.3908 3.92405C47.5655 4.28409 47.6528 4.70415 47.6856 5.31422L47.7293 6.19433H44.3341H40.9389V5.39423C40.9389 4.83416 41.0044 4.43411 41.1681 4.04406C41.4629 3.31397 42.2598 2.58388 43.0349 2.30385C43.81 2.03381 44.9017 2.02381 45.5677 2.29385ZM30.5022 31.4675C30.1965 31.8976 29.8908 32.4976 29.7162 33.0477C29.5852 33.4477 29.5415 34.5379 29.4869 38.6984C29.4105 43.709 29.4105 43.8691 29.1703 44.4491C29.0393 44.7792 28.7555 45.2792 28.548 45.5593C28.0131 46.2694 26.9323 47.1795 26.3319 47.4295C25.1528 47.8996 25.262 47.8996 15.7205 47.8996H6.72489L7.1179 47.5195C7.8821 46.7994 8.61354 45.5093 8.9083 44.3991C9.01747 43.9891 9.05022 42.8089 9.06114 39.8185C9.06114 35.388 9.07205 35.268 9.74891 34.0478C10.1419 33.3277 11.3428 32.2076 12.0852 31.8675C12.631 31.6175 13.5044 31.3375 13.9738 31.2675C14.1266 31.2475 17.9476 31.2175 22.4782 31.2075L30.6987 31.1975L30.5022 31.4675ZM36.6812 31.5475C37.8712 32.1076 38.5044 33.0777 38.6135 34.5679L38.679 35.398H35.2183H31.7686V34.9179C31.7686 34.2478 31.9651 33.3177 32.2052 32.8977C32.4454 32.4776 33.1223 31.8375 33.5699 31.6175C34.5087 31.1675 35.786 31.1375 36.6812 31.5475Z" />
-                                                                    <path
-                                                                        d="M23.3078 6.31439C22.9257 6.50442 22.7074 6.83446 22.7074 7.22451C22.7074 7.73457 23.0458 8.15462 23.5589 8.29464C24.1266 8.43466 35.1419 8.43466 35.5567 8.28464C36.1135 8.09462 36.3537 7.80458 36.3537 7.32452C36.3537 6.77445 36.2227 6.54442 35.8078 6.3444C35.5349 6.21438 34.6397 6.19438 29.5087 6.19438C25.3712 6.20438 23.4607 6.23438 23.3078 6.31439Z" />
-                                                                    <path
-                                                                        d="M23.3078 12.6155C22.9148 12.8055 22.7074 13.1355 22.7074 13.5656C22.7074 13.8956 22.7729 14.0456 23.0458 14.2857L23.3843 14.5957H29.5305H35.6768L36.0153 14.3357C36.2991 14.1156 36.3537 14.0056 36.3537 13.6256C36.3537 13.0755 36.2227 12.8455 35.8078 12.6455C35.5349 12.5154 34.6397 12.4954 29.5087 12.4954C25.3712 12.5054 23.4607 12.5354 23.3078 12.6155Z" />
-                                                                    <path
-                                                                        d="M23.3078 18.8163C22.9257 19.0064 22.7074 19.3364 22.7074 19.7265C22.7074 20.2365 23.0458 20.6566 23.5589 20.7966C24.1266 20.9366 35.1419 20.9366 35.5567 20.7866C36.1353 20.5866 36.3537 20.3065 36.3537 19.7665C36.3537 19.3464 36.31 19.2364 36.0153 18.9864L35.6768 18.6963H29.596C25.393 18.7063 23.4607 18.7363 23.3078 18.8163Z" />
-                                                                    <path
-                                                                        d="M23.3078 25.1164C22.9148 25.3065 22.7074 25.6365 22.7074 26.0666C22.7074 26.3966 22.7729 26.5466 23.0458 26.7866L23.3843 27.0967H29.5524H35.7205L36.0371 26.8066C36.2882 26.5766 36.3537 26.4266 36.3537 26.0966C36.3537 25.5765 36.2118 25.3365 35.8078 25.1464C35.5349 25.0164 34.6397 24.9964 29.5087 24.9964C25.3712 25.0064 23.4607 25.0364 23.3078 25.1164Z" />
-                                                                    <path
-                                                                        d="M11.8341 35.5778C11.2336 36.0179 11.19 36.6679 11.7249 37.158L12.0961 37.498H19.2686C24.3341 37.498 26.5066 37.468 26.6703 37.388C27.369 37.058 27.5109 36.2379 26.976 35.7078L26.6594 35.3978H19.3559C12.6092 35.3978 12.0415 35.4178 11.8341 35.5778Z" />
-                                                                    <path
-                                                                        d="M12.3908 41.669C11.4301 41.859 11.0371 42.7491 11.6375 43.3892L11.9214 43.6992H19.334H26.7576L27.0196 43.4392C27.5764 42.8891 27.2489 41.909 26.441 41.699C26.048 41.599 12.8821 41.569 12.3908 41.669Z" />
-                                                                </svg>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                             
 
 
 
-                                              <!--   <div class="col-md-4 col-sm-6">
-                                                    <div class="dashboard-card hover-border1">
-                                                        <div class="header">
-                                                            <h5>⭐ {{ \App\Helpers\TranslationHelper::TranslateText('Mes points') }}</h5>
-                                                        </div>
-
-                                                        <div class="row body">
-                                                            <div class="col-12 counter-item">
-                                                                <h2>{{ $totalPoints }}</h2>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-4 col-sm-6">
-                                                    <div class="dashboard-card hover-border1">
-                                                        <div class="header">
-                                                            <h5>💰 {{ \App\Helpers\TranslationHelper::TranslateText('Mon solde') }}</h5>
-                                                        </div>
-
-                                                        <div class="row body">
-                                                            <div class="col-12 counter-item">
-                                                                <h2>{{ $solde }} <x-devise /></h2>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div> -->
+                                               
                                             </div>
                                         </div>
                                     </div>
@@ -199,7 +126,7 @@
                                                     <th scope="col"> {{ \App\Helpers\TranslationHelper::TranslateText('Produit') }}</th>
 
                                                     <th scope="col"> {{ \App\Helpers\TranslationHelper::TranslateText('Montant') }}</th>
-                                                    <th scope="col"> {{ \App\Helpers\TranslationHelper::TranslateText('Frais') }}</th>
+                                                    <th scope="col"> {{ \App\Helpers\TranslationHelper::TranslateText('Commission') }}</th>
                                                     <th scope="col"> {{ \App\Helpers\TranslationHelper::TranslateText('Date') }}</th>
                                                     <th scope="col"> {{ \App\Helpers\TranslationHelper::TranslateText('Status') }}</th>
                                                     <th scope="col">Action</th>
@@ -272,88 +199,6 @@
                             </div>
 
 
-                            <div class="tab-pane fade" id="nav-points" role="tabpanel">
-    <div class="axil-dashboard-order">
-
-        <h4>⭐ {{ \App\Helpers\TranslationHelper::TranslateText('Historique des points') }}</h4>
-
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Points</th>
-                    <th>Description</th>
-                </tr>
-            </thead>
-
-            <tbody>
-                @forelse($pointsHistories as $history)
-                    <tr>
-                        <td>{{ $history->created_at }}</td>
-                        <td>+{{ $history->montant }}</td>
-                      <td>
-    <div>
-        <small class="text-muted">
-            ⭐  Points gagnés après achat
-        </small>
-
-        <div class="fw-bold">
-            🛒 {{ optional($history->produit)->nom ?? 'Produit supprimé' }}
-        </div>
-    </div>
-</td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="3">Aucun historique</td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
-
-    </div>
-</div>
-
-
-<div class="tab-pane fade" id="nav-wallet" role="tabpanel">
-    <div class="axil-dashboard-order">
-
-        <h4>💰 {{ \App\Helpers\TranslationHelper::TranslateText('Historique du solde') }}</h4>
-
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Montant</th>
-                    <th>Type</th>
-                    <th>Description</th>
-                </tr>
-            </thead>
-
-            <tbody>
-                @forelse($walletHistories as $wallet)
-                    <tr>
-                        <td>{{ $wallet->created_at }}</td>
-                        <td>
-                            @if($wallet->type == 'credit')
-                                <span class="text-success">+{{ $wallet->amount }}</span>
-                            @else
-                                <span class="text-danger">-{{ $wallet->amount }}</span>
-                            @endif
-                        </td>
-                        <td>{{ $wallet->type }}</td>
-                        <td>{{ $wallet->description }}</td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="4">Aucun historique</td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
-
-    </div>
-</div>
                             <div class="tab-pane fade" id="nav-account" role="tabpanel">
                                 <div class="col-lg-12">
                                     <div class="row">

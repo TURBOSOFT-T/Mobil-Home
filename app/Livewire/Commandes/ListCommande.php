@@ -195,37 +195,14 @@ public function render()
         // ➤ Gestion des commandes retournées
         if ($newStatus == "retournée") {
 
-            if ($client) {
-                if ($commande->mode === 'solde' && $commande->solde_utilise > 0) {
-                    $client->solde += $commande->solde_utilise;
-                }
+            
 
-                if ($commande->mode === 'points' && $commande->points_utilise > 0) {
-                    $client->points += $commande->points_utilise;
-                }
-                $client->save();
-            }
-
-            foreach ($commande->contenus as $contenus) {
-                $article = produits::find($contenus->id_produit);
-                if ($article) {
-                    $article->retourner_stock($contenus->quantite);
-                }
-            }
+          
 
             $this->sendOrderConfirmationMail($commande);
         }
 
-        // ➤ Commande payée
-        if ($newStatus == "payée") {
-            foreach ($commande->contenus as $contenus) {
-                if ($client) {
-                    $client->points += $contenus->total_gain_points;
-                    $client->save();
-                }
-            }
-        }
-
+      
         // ➤ Autres statuts avec email
         if (in_array($newStatus, ["En cours livraison", "traitement", "planification"])) {
             $this->sendOrderConfirmationMail($commande);
@@ -254,23 +231,7 @@ public function render()
 
         if ($commande->statut == "attente" || $commande->statut == "créé" || $commande->statut == "traitement" || $commande->statut == "planification" || $commande->statut == "livrée") {
 
-            foreach ($commande->contenus as $contenus) {
-                $article = produits::find($contenus->id_produit);
-                if ($article) {
-                    $article->retourner_stock($contenus->quantite);
-                }
-                if ($client) {
-
-                    if ($commande->mode === 'solde' && $commande->solde_utilise > 0) {
-                        $client->solde += $commande->solde_utilise;
-                    }
-
-                    if ($commande->mode === 'points' && $commande->points_utilise > 0) {
-                        $client->points += $commande->points_utilise - $contenus->total_gain_points;
-                    }
-                    $client->save();
-                }
-            }
+           
 
 
             $commande->delete();

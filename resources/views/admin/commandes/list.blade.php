@@ -35,13 +35,7 @@
                             <h5 class="header-title">
                                 Liste des commandes
                             </h5>
-                            <div>
-                                @can('order_add')
-                                    <button class="btn btn-sm btn-primary" onclick="url('{{ route('new_commande') }}')">
-                                        <i class="ri-folder-add-fill"></i> Ajouter une commande
-                                    </button>
-                                @endcan
-                            </div>
+                            
                         </div>
                     </div>
                     <hr>

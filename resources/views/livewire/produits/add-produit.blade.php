@@ -4,9 +4,9 @@
 
     @if ($produit)
     <form wire:submit="update_produit">
-        @else
-        <form wire:submit="create">
-            @endif
+    @else
+    <form wire:submit="create">
+    @endif
 
             <div class="row">
                 <div class="col-sm-8">
@@ -15,11 +15,11 @@
                         <div class="form-check">
                             <input type="checkbox" class="form-check-input" wire:model="is_new" id="is_new">
                             <label class="form-check-label" for="is_new">
-                                Nouveau produit
+                                Nouveau bien
                             </label>
                         </div>
 
-                        <!-- Nouveau champ : Activer la commission -->
+                        <!-- Activer la commission -->
                         <div class="form-check">
                             <input type="checkbox" class="form-check-input" wire:model.live="avec_commission" id="avec_commission">
                             <label class="form-check-label font-weight-bold" for="avec_commission">
@@ -27,30 +27,60 @@
                             </label>
                         </div>
 
-
                         <div class="form-check">
                             <input type="checkbox" class="form-check-input" wire:model.live="avec_caracteristique" id="avec_caracteristique">
-                            <!-- Après (Correction) -->
-                            <label class="form-check-label font-weight-bold" for="avec_caracteristique">Produit avec des propriétés spécifiques</label>
+                            <label class="form-check-label font-weight-bold" for="avec_caracteristique">Propriétés spécifiques / Commodités</label>
                         </div>
                     </div>
 
-                    <!-- Nouveau champ : Montant de la commission (Affiché conditionnellement) -->
+                    <!-- Montant de la commission (Affiché conditionnellement) -->
                     @if($avec_commission)
                     <div class="mb-3 p-3 border rounded bg-light">
-                        <label for="commission">Montant de la commission</label>
-                        <input type="number" id="commission" class="form-control @error('commission') is-invalid @enderror"
-                            wire:model="commission" placeholder="Ex: 500">
+                        <label for="commission">Montant ou pourcentage de la commission</label>
+                        <input type="number" step="0.01" id="commission" class="form-control @error('commission') is-invalid @enderror"
+                            wire:model="commission" placeholder="Ex: 10 ou 5000">
                         @error('commission')
                         <span class="text-danger small">{{ $message }}</span>
                         @enderror
                     </div>
                     @endif
 
+                    <!-- Nom du bien -->
                     <div class="mb-3">
-                        <label for="">Nom du produit</label>
-                        <input type="text" name="nom" class="form-control" wire:model="nom">
+                        <label for="">Nom du bien immobilier</label>
+                        <input type="text" class="form-control" wire:model.live="nom" placeholder="Ex: Studio meublé moderne">
                         @error('nom')
+                        <span class="text-danger small"> {{ $message }} </span>
+                        @enderror
+                    </div>
+
+                    <!-- Slug automatique -->
+                    <div class="mb-3">
+                        <label for="slug">Slug (URL)</label>
+                        <input type="text" id="slug" class="form-control" wire:model="slug" placeholder="genere-automatiquement">
+                        @error('slug')
+                        <span class="text-danger small"> {{ $message }} </span>
+                        @enderror
+                    </div>
+
+                    <!-- Type d'habitation -->
+                    <div class="mb-3">
+                        <label for="type_habitation">Type d'habitation <span class="text-danger">*</span></label>
+                        <select id="type_habitation" wire:model="type_habitation" class="form-control @error('type_habitation') is-invalid @enderror">
+                            <option value="chambre">Chambre</option>
+                            <option value="studio">Studio</option>
+                            <option value="appartement">Appartement</option>
+                            <option value="duplex">Duplex</option>
+                            <option value="villa">Villa</option>
+                            <option value="maison">Maison</option>
+                            <option value="bureau">Bureau</option>
+                            <option value="commerce">Commerce</option>
+                            <option value="boutique">Boutique</option>
+                            
+                            <option value="terrain">Terrain</option>
+                            <option value="autre">Autre</option>
+                        </select>
+                        @error('type_habitation')
                         <span class="text-danger small"> {{ $message }} </span>
                         @enderror
                     </div>
@@ -60,22 +90,19 @@
                         @foreach($caracteristiques as $index => $caracteristique)
                         <div class="row mb-2" wire:key="carac-{{ $index }}">
                             <div class="col-5">
-                                <input type="text" class="form-control" placeholder="Ex: RAM" wire:model="caracteristiques.{{ $index }}.cle">
+                                <input type="text" class="form-control" placeholder="Ex: Climatisation" wire:model="caracteristiques.{{ $index }}.cle">
                             </div>
                             <div class="col-5">
-                                <input type="text" class="form-control" placeholder="Ex: 16 Go" wire:model="caracteristiques.{{ $index }}.valeur">
+                                <input type="text" class="form-control" placeholder="Ex: Oui / 2 splits" wire:model="caracteristiques.{{ $index }}.valeur">
                             </div>
                             <div class="col-2">
-                                <button type="button" class="btn btn-danger" wire:click="removeCaracteristique({{ $index }})">Supprimer</button>
+                                <button type="button" class="btn btn-danger btn-sm w-100" wire:click="removeCaracteristique({{ $index }})">Supprimer</button>
                             </div>
                         </div>
                         @endforeach
-                        <button type="button" class="btn btn-primary" wire:click="addCaracteristique">Ajouter une caractéristique</button>
+                        <button type="button" class="btn btn-primary btn-sm mt-2" wire:click="addCaracteristique">Ajouter une caractéristique</button>
                     </div>
                     @endif
-
-                    
-                
 
                     <div class="mb-3" wire:ignore>
                         <label><strong>Description :</strong></label>
@@ -105,9 +132,9 @@
                         </div>
 
                         <div class="col-sm-6 mb-3">
-                            <label for="sub_category">Rayon :</label>
+                            <label for="sub_category">Sous-catégorie :</label>
                             <select id="sub_category" wire:model="sous_categorie_id" wire:change="loadFamilles" class="form-control @error('sous_categorie_id') is-invalid @enderror">
-                                <option value="">Choisir un rayon</option>
+                                <option value="">Choisir une sous-catégorie</option>
                                 @foreach ($sous_categories as $cat)
                                 <option value="{{ $cat->id }}">{{ $cat->nom }}</option>
                                 @endforeach
@@ -130,86 +157,58 @@
                             @enderror
                         </div>
 
-                        <div class="col-sm-6 mb-3">
-                            <label for="marque_id">Marque </label>
-                            <select id="marque_id" wire:model='marque_id' class="form-control @error('marque_id') is-invalid @enderror">
-                                <option value=""></option>
-                                @foreach ($marques as $cat)
-                                <option value="{{ $cat->id }}">{{ $cat->nom }}</option>
-                                @endforeach
-                            </select>
-                            <!-- Correction de l'index d'erreur ici : marque_id au lieu de category_id -->
-                            @error('marque_id')
-                            <span class="text-danger small"> {{ $message }} </span>
-                            @enderror
-                        </div>
+                     
+
                         <div class="col-sm-6">
                             <div class="mb-3">
-                                <label for="">Prix de vente</label>
-                                <input type="number" step="0.1" name="prix" class="form-control" wire:model="prix">
+                                <label for="">Prix / Loyer</label>
+                                <input type="number" step="0.01" class="form-control" wire:model="prix">
                                 @error('prix')
                                 <span class="text-danger small"> {{ $message }} </span>
                                 @enderror
                             </div>
                         </div>
-                        <div class="col-sm-6">
-                            <div class="mb-3">
-                                <label for="">Prix d'achat</label>
-                                <input type="number" step="0.1" name="prix_achat" class="form-control"
-                                    wire:model="prix_achat">
-                                @error('prix_achat')
-                                <span class="text-danger small"> {{ $message }} </span>
-                                @enderror
-                            </div>
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="mb-3">
-                                <label for="">Référence du produit</label>
-                                <input type="text" step="0.1" name="reference" class="form-control"
-                                    wire:model="reference">
-                                @error('reference')
-                                <span class="text-danger small"> {{ $message }} </span>
-                                @enderror
-                            </div>
-                        </div>
+
+                       
 
                     </div>
                 </div>
+
                 <div class="col-sm-4">
                     <div class="mb-3">
-                        <label for="">Photo d'illustration (300*300)</label>
+                        <label for="">Photo d'illustration</label>
                         <div class="preview-produit-illustration" onclick="preview_illustration('new-prosduit')">
                             @if ($produit)
-                            @if ($photo2 && is_null($photo))
-                            <img src="{{ Storage::url($photo2) }}" alt="" class="w-100">
+                                @if ($photo2 && is_null($photo))
+                                <img src="{{ Storage::url($photo2) }}" alt="" class="w-100">
+                                @else
+                                <img src="{{ $photo ? $photo->temporaryUrl() : '/icons/no-image.webp' }}" alt="" class="w-100">
+                                @endif
                             @else
-                            <img src="{{ $photo->temporaryUrl() }}" alt="" srcset="">
-                            @endif
-                            @else
-                            @if ($photo)
-                            <img src="{{ $photo->temporaryUrl() }}" alt="" class="w-100">
-                            @else
-                            <img src="/icons/no-image.webp" alt="" class="w-100">
-                            @endif
+                                @if ($photo)
+                                <img src="{{ $photo->temporaryUrl() }}" alt="" class="w-100">
+                                @else
+                                <img src="/icons/no-image.webp" alt="" class="w-100">
+                                @endif
                             @endif
                         </div>
-                        <input type="file" name="photo" accept="image/*" class=" d-none" id="file-input-new-prosduit"
-                            wire:model="photo">
+                        <input type="file" accept="image/*" class="d-none" id="file-input-new-prosduit" wire:model="photo">
                         @error('photo')
                         <span class="text-danger small"> {{ $message }} </span>
                         @enderror
                     </div>
 
                     <div class="mb-3">
-                        <label for="">Autres photos</label>
-                        <input type="file" multiple name="photos" accept="image/*" class="form-control" wire:model="photos">
-                        @error('photos')
+                        <label for="">Autres photos (Galerie)</label>
+                        <input type="file" multiple accept="image/*" class="form-control" wire:model="photos">
+                        @error('photos.*')
                         <span class="text-danger small"> {{ $message }} </span>
                         @enderror
                     </div>
 
                 </div>
             </div>
+
             <div style="text-align: right;">
                 <button class="btn btn-primary btn-sm px-5" type="submit" wire:loading.attr="disabled">
                     <span wire:loading>
@@ -218,19 +217,19 @@
                     @if ($produit)
                     Mettre a jour
                     @else
-                    Enregistrer le produit
+                    Enregistrer le bien
                     @endif
                 </button>
             </div>
-        </form>
+    </form>
 </div>
+
 <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
 <script>
     document.addEventListener('livewire:navigated', () => {
         ClassicEditor
             .create(document.querySelector('#description'))
             .then(editor => {
-                // Met à jour Livewire dès que le texte change dans CKEditor
                 editor.model.document.on('change:data', () => {
                     @this.set('description', editor.getData());
                 });

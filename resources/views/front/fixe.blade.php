@@ -14,13 +14,12 @@ $currentLocale = app()->getLocale();
 
 <!doctype html>
 <html class="no-js" lang="en">
-
 <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <title>Mobil-Home</title>
     <meta name="robots" content="noindex, follow" />
-    <meta name="description" content="">
+    <meta name="description" content="Mobil-Home réinvente votre façon de vivre et d'investir dans l'immobilier de loisirs, en vous proposant des résidences modernes, confortables et clés en main pour vos projets de vie et de vacances.">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <!-- Favicon -->
     <link rel="shortcut icon" type="image/x-icon" href="{{ Storage::url($config->icon ?? ' ') }}">
@@ -475,8 +474,7 @@ $currentLocale = app()->getLocale();
                                 </li>
 
 
-                                <li><a href="{{ route('shop') }}">{{ __('boutique') }}</a></li>
-                                </li class="menu-item">
+                                 </li class="menu-item">
                                 <li><a href="{{ route('about') }}">
                                         {{ \App\Helpers\TranslationHelper::TranslateText('A propos de nous') }}
                                     </a></li>
@@ -523,17 +521,8 @@ $currentLocale = app()->getLocale();
                                     <i class="flaticon-magnifying-glass"></i>
                                 </a>
                             </li>
-                            <li class="wishlist">
-                                <a href="{{ route('favories') }}">
-                                    <i class="flaticon-heart"></i>
-                                </a>
-                            </li>
-                            <li class="shopping-cart">
-                                <a href="#" class="cart-dropdown-btn">
-                                    <span class="cart-count" id="count-panier-span">00</span>
-                                    <i class="flaticon-shopping-cart"></i>
-                                </a>
-                            </li>
+                          
+                          
 
                             <li class="my-account">
                                 <a href="javascript:void(0)">
@@ -553,17 +542,9 @@ $currentLocale = app()->getLocale();
                                             </a>
                                         </li>
 
-                                        <li>
-                                            <a href="{{ route('favories') }}">
-                                                {{ \App\Helpers\TranslationHelper::TranslateText('Mes favoris') }}
-                                            </a>
-                                        </li>
+                                       
 
-                                        <li>
-                                            <a href="{{ route('cart') }}">
-                                                {{ \App\Helpers\TranslationHelper::TranslateText('Mon panier') }}
-                                            </a>
-                                        </li>
+                                     
                                         <li>
                                             <a href="{{ route('profile') }}">{{ __('parametres') }}
                                             </a>
@@ -906,9 +887,7 @@ $currentLocale = app()->getLocale();
                                 <ul>
                                     @if (Auth()->user())
                                     <li><a href="{{ route('profile') }}"> {{ \App\Helpers\TranslationHelper::TranslateText('Paramètres') }}</a></li>
-                                    <li><a href="{{ route('favories') }}"> {{ \App\Helpers\TranslationHelper::TranslateText('Mes favoris') }}</a></li>
-                                    <li><a href="{{ route('cart') }}"> {{ \App\Helpers\TranslationHelper::TranslateText('Mon panier') }}</a></li>
-                                    @endif
+                                        @endif
                                 </ul>
                             </div>
                         </div>
@@ -923,8 +902,7 @@ $currentLocale = app()->getLocale();
                                     <li><a href="{{ route('home') }}"> {{ \App\Helpers\TranslationHelper::TranslateText('Accueil') }}</a></li>
                                     <li><a href="{{ route('about') }}"> {{ \App\Helpers\TranslationHelper::TranslateText('A propos de nous') }}</a></li>
 
-                                    <li><a href="{{ route('shop') }}"> {{ \App\Helpers\TranslationHelper::TranslateText('Produits') }}</a></li>
-                                    <li><a href="{{ route('contact') }}"> {{ \App\Helpers\TranslationHelper::TranslateText('Contact') }}</a></li>
+                                       <li><a href="{{ route('contact') }}"> {{ \App\Helpers\TranslationHelper::TranslateText('Contact') }}</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -998,10 +976,7 @@ $currentLocale = app()->getLocale();
     <!-- Header Search Modal End -->
 
 
-    <!-- le panier  -->
-    @include('front.components.panier')
-
-
+ 
 
     <style>
         .btn-bg-primary2 {

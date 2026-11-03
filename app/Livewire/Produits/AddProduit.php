@@ -2,60 +2,67 @@
 
 namespace App\Livewire\Produits;
 
-use App\Models\{produits, Category, Famille, Marque, Sous_category};
+use App\Models\{produits, Category, Famille, Sous_category};
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Livewire\Component;
 use Livewire\WithFileUploads;
-use App\Http\Traits\{TailleProduit, ListColor, ListColors};
 
 class AddProduit extends Component
 {
     use WithFileUploads;
-    use ListColor;
-    use ListColors;
-    use TailleProduit;
 
     // Propriétés du formulaire
-    public $nom, $tags, $taille = [], $couleur = [], $points, $prix, $category_id, $photo, $photos, $prix_achat, $photo2, $photos2, $produit, $reference, $description, $marque_id;
-    public $free_shipping = false;
+    public $nom, $slug, $tags, $prix, $category_id, $photo, $photos, $photo2, $photos2, $produit,  $description;
+    
+    // Type d'habitation
+    public $type_habitation = 'appartement';
+  
     public $is_new = false;
     public $meta_description, $sous_categorie_id, $famille_id;
 
-    // NOUVELLES PROPRIÉTÉS POUR LA COMMISSION
+    // Propriétés pour la commission et caractéristiques
     public $avec_commission = false;
-    public   $avec_caracteristique = false;
-
+    public $avec_caracteristique = false;
     public $commission;
 
     // Listes dynamiques pour les selects dépendants
     public $sous_categories = [];
     public $familles = [];
-    // NOUVELLE PROPRIÉTÉ POUR LES CARACTÉRISTIQUES (JSON)
     public $caracteristiques = [];
+
+    // Génération automatique du slug en temps réel lorsque l'utilisateur tape le nom
+    public function updatedNom($value)
+    {
+        $this->slug = Str::slug($value);
+    }
 
     public function mount($produit = null)
     {
         if ($produit) {
             $this->produit = $produit;
             $this->nom = $produit->nom;
+            $this->slug = $produit->slug;
             $this->tags = $produit->tags;
             $this->category_id = $produit->category_id;
-            $this->marque_id = $produit->marque_id;
+         
             $this->sous_categorie_id = $produit->sous_categorie_id;
             $this->famille_id = $produit->famille_id;
-            $this->points = $produit->points;
-            $this->reference = $produit->reference;
+            
+
             $this->prix = $produit->prix;
-            $this->prix_achat = $produit->prix_achat;
+            
             $this->photo2 = $produit->photo;
             $this->photos2 = $produit->photos;
             $this->description = $produit->description;
-            //  $this->meta_description = $produit->meta_description;
-            $this->free_shipping = (bool)$produit->free_shipping;
-            $this->is_new = (bool)$produit->is_new;
             $this->meta_description = $produit->meta_description;
+            
+            // Chargement du type d'habitation
+            $this->type_habitation = $produit->type_habitation ?? 'appartement';
 
-            // Chargement initial de la commission
+            $this->is_new = (bool)$produit->is_new;
+
+            // Chargement initial de la commission et caractéristiques
             $this->avec_commission = (bool)$produit->avec_commission;
             $this->avec_caracteristique = (bool)$produit->avec_caracteristique;
             $this->commission = $produit->commission;
@@ -63,16 +70,23 @@ class AddProduit extends Component
                 ? json_decode($produit->caracteristiques, true)
                 : ($produit->caracteristiques ?? []);
 
-            // Gestion de la désérialisation
-            $this->taille = is_string($produit->taille) ? json_decode($produit->taille, true) : $produit->taille;
-            $this->couleur = is_string($produit->couleur) ? json_decode($produit->couleur, true) : $produit->couleur;
-
             // Chargement initial des listes dépendantes
             $this->sous_categories = Sous_category::where('categorie_id', $this->category_id)->get();
             $this->familles = Famille::where('sous_categorie_id', $this->sous_categorie_id)->get();
         }
     }
 
+    public function toggleStatut($id)
+{
+    $produit = produits::find($id);
+    if ($produit) {
+        // Alterne entre disponible et indisponible
+        $produit->statut = ($produit->statut === 'disponible') ? 'indisponible' : 'disponible';
+        $produit->save();
+        
+        session()->flash('success', 'Le statut du bien a été mis à jour avec succès.');
+    }
+}
     // Déclenché à la modification de la catégorie principale dans la vue
     public function loadSubCategories()
     {
@@ -88,6 +102,7 @@ class AddProduit extends Component
         $this->famille_id = null;
         $this->familles = Famille::where('sous_categorie_id', $this->sous_categorie_id)->get();
     }
+
     // Ajouter une ligne de caractéristique
     public function addCaracteristique()
     {
@@ -98,62 +113,78 @@ class AddProduit extends Component
     public function removeCaracteristique($index)
     {
         unset($this->caracteristiques[$index]);
-        $this->caracteristiques = array_values($this->caracteristiques); // Réindexation du tableau
+        $this->caracteristiques = array_values($this->caracteristiques);
     }
+
     public function render()
     {
         return view('livewire.produits.add-produit', [
             'categories' => Category::all(),
-            'marques'    => Marque::all(),
-            'couleurs'   => $this->getListColor(),
-            'colors'     => $this->getListColors(),
-            'tailles'    => $this->getListTailleProduit(),
+           
         ]);
+    }
+
+    // Fonction utilitaire pour garantir l'unicité du slug
+    private function generateUniqueSlug($nom, $ignoreId = null)
+    {
+        $slug = Str::slug($nom);
+        $originalSlug = $slug;
+        $count = 1;
+
+        while (produits::where('slug', $slug)->when($ignoreId, function ($query, $ignoreId) {
+            return $query->where('id', '!=', $ignoreId);
+        })->exists()) {
+            $slug = $originalSlug . '-' . $count;
+            $count++;
+        }
+
+        return $slug;
     }
 
     public function create()
     {
         $this->validate([
             'nom'               => 'required|string',
+            'slug'              => 'nullable|string|unique:produits,slug',
             'description'       => 'required|string|max:50000',
-            'meta_description' => 'nullable|string|max:255',
-            'reference'         => 'required|string|unique:produits,reference',
-            'prix'              => 'required|numeric|gt:prix_achat',
-            'prix_achat'        => 'required|numeric',
+            'meta_description'  => 'nullable|string|max:255',
+          
+            'type_habitation'   => 'required|in:chambre,studio,appartement,duplex,villa,bureau,commerce,terrain,maison,boutique,local_commercial,autre',
+            'prix'              => 'required|numeric',
             'photo'             => 'required|image|mimes:jpeg,png,jpg,svg,webp|max:2048',
             'photos.*'          => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-            'category_id'       => 'required|integer|exists:categories,id',
+          //  'category_id'       => 'required|integer|exists:categories,id',
             'sous_categorie_id' => 'nullable|integer|exists:sous_categories,id',
             'famille_id'        => 'nullable|integer|exists:familles,id',
-            'points'            => 'nullable|numeric',
-            'free_shipping'     => 'nullable|boolean',
+       
             'is_new'            => 'nullable|boolean',
-            'marque_id'         => 'nullable|integer|exists:marques,id',
-            'couleur'           => 'nullable|array',
-            'taille'            => 'nullable|array',
-            'caracteristiques'           => 'nullable|array',
+         
+            'caracteristiques'  => 'nullable|array',
             'caracteristiques.*.cle'    => 'required_with:caracteristiques.*.valeur|nullable|string',
             'caracteristiques.*.valeur' => 'required_with:caracteristiques.*.cle|nullable|string',
 
-            // Validation sécurisée pour la commission
-            'avec_commission' => 'nullable|boolean',
-            'commission'      => 'required_if_accepted:avec_commission|nullable|numeric|min:0',
+            // Validation pour la commission
+            'avec_commission'   => 'nullable|boolean',
+            'commission'        => 'required_if_accepted:avec_commission|nullable|numeric|min:0',
         ]);
 
-        // Note : Pensez à renommer votre modèle en "Produit" (singulier) pour respecter les conventions Laravel
         $produit = new produits();
+        $produit->user_id = auth()->id();
+
         $produit->nom = $this->nom;
+        // Génération automatique et sécurisée du slug
+        $produit->slug = $this->slug ? $this->generateUniqueSlug($this->slug) : $this->generateUniqueSlug($this->nom);
+        
         $produit->description = $this->description;
         $produit->meta_description = $this->meta_description;
-        $produit->reference = $this->reference;
+       
+        $produit->type_habitation = $this->type_habitation;
         $produit->prix = $this->prix;
-        $produit->prix_achat = $this->prix_achat;
-        $produit->points = $this->points ?? 0;
+        
         $produit->category_id = $this->category_id;
         $produit->sous_categorie_id = $this->sous_categorie_id;
         $produit->famille_id = $this->famille_id;
-        $produit->marque_id = $this->marque_id;
-        $produit->free_shipping = (bool)$this->free_shipping;
+   
         $produit->is_new = (bool)$this->is_new;
 
         // Attribution de la commission
@@ -161,7 +192,7 @@ class AddProduit extends Component
         $produit->commission = $this->avec_commission ? $this->commission : null;
         $produit->avec_caracteristique = (bool)$this->avec_caracteristique;
 
-        // Filtrer les lignes vides en sécurisant le tableau
+        // Filtrer les lignes de caractéristiques vides
         if ($this->avec_caracteristique && is_array($this->caracteristiques)) {
             $filteredCaracteristiques = array_filter($this->caracteristiques, function ($item) {
                 return !empty($item['cle']) && !empty($item['valeur']);
@@ -172,7 +203,9 @@ class AddProduit extends Component
         }
 
         // Upload photo principale
-        $produit->photo = $this->photo->store('produits', 'public');
+        if ($this->photo) {
+            $produit->photo = $this->photo->store('produits', 'public');
+        }
 
         // Upload galerie photos
         if ($this->photos) {
@@ -186,30 +219,29 @@ class AddProduit extends Component
         $produit->save();
 
         $this->reset();
-        session()->flash('success', 'Produit ajouté avec succès');
+        session()->flash('success', 'Bien immobilier ajouté avec succès');
     }
-
 
     public function update_produit()
     {
         if ($this->produit) {
             $this->validate([
                 'nom'               => 'required|string',
-                'prix'              => 'required|numeric|gt:prix_achat',
-                'meta_description' => 'nullable|string|max:255',
-                'prix_achat'        => 'required|numeric',
+                'slug'              => 'nullable|string|unique:produits,slug,' . $this->produit->id,
+                'prix'              => 'required|numeric',
+                'meta_description'  => 'nullable|string|max:255',
+                'type_habitation'   => 'required|in:chambre,studio,appartement,duplex,villa,bureau,commerce,terrain,maison,boutique,local_commercial,autre',
                 'photo'             => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
                 'photos.*'          => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-                'marque_id'         => 'nullable|integer|exists:marques,id',
-                'category_id'       => 'required|integer|exists:categories,id',
+           
+            //    'category_id'       => 'required|integer|exists:categories,id',
                 'sous_categorie_id' => 'nullable|integer|exists:sous_categories,id',
                 'famille_id'        => 'nullable|integer|exists:familles,id',
-                'free_shipping'     => 'nullable|boolean',
+          
                 'is_new'            => 'nullable|boolean',
-                'caracteristiques'          => 'nullable|array',
+                'caracteristiques'  => 'nullable|array',
                 'caracteristiques.*.cle'    => 'required_with:caracteristiques.*.valeur|nullable|string',
                 'caracteristiques.*.valeur' => 'required_with:caracteristiques.*.cle|nullable|string',
-
 
                 // Validation de la commission en modification
                 'avec_commission'   => 'required|boolean',
@@ -217,25 +249,26 @@ class AddProduit extends Component
             ]);
 
             $this->produit->nom = $this->nom;
+            // Mise à jour automatique ou personnalisée du slug en excluant l'ID courant
+            $baseForSlug = $this->slug ?: $this->nom;
+            $this->produit->slug = $this->generateUniqueSlug($baseForSlug, $this->produit->id);
+
             $this->produit->description = $this->description;
-            $this->meta_description = $this->meta_description;
-            $this->produit->points = $this->points;
+            $this->produit->meta_description = $this->meta_description;
+            $this->produit->type_habitation = $this->type_habitation;
             $this->produit->prix = $this->prix;
-            $this->produit->prix_achat = $this->prix_achat;
-            $this->produit->marque_id = $this->marque_id;
+            
+          
             $this->produit->category_id = $this->category_id;
             $this->produit->sous_categorie_id = $this->sous_categorie_id;
             $this->produit->famille_id = $this->famille_id;
-            $this->produit->free_shipping = $this->free_shipping;
+        
             $this->produit->is_new = $this->is_new;
 
-            // Attribution de la commission avec sécurité en modification
+            // Attribution de la commission
             $this->produit->avec_commission = $this->avec_commission;
             $this->produit->commission = $this->avec_commission ? $this->commission : null;
             $this->produit->avec_caracteristique = $this->avec_caracteristique;
-
-            $this->produit->couleur = json_encode($this->couleur);
-            $this->produit->taille = json_encode($this->taille);
 
             // Filtrer et sauvegarder les caractéristiques
             $filteredCaracteristiques = array_filter($this->caracteristiques, function ($item) {
@@ -260,7 +293,7 @@ class AddProduit extends Component
 
             $this->produit->save();
 
-            return redirect()->route('produits')->with('success', "Produit modifié avec succès");
+            return redirect()->route('produits')->with('success', "Bien immobilier modifié avec succès");
         }
     }
 }

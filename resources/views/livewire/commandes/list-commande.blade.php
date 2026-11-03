@@ -127,7 +127,7 @@
                         <th>Traitement</th>
                         <th>Statut</th>
                         <th>Mode</th>
-                        <th>Coupon(Valeur)</th>
+                        <th>Commission</th>
 
                         {{--  <th>Date</th> --}}
                         <th class="text-end">
@@ -196,7 +196,7 @@
                             </td> -->
 
 
-                            <td>{{ $commande->montant() - $commande->coupon ?? '' }} <x-devise></x-devise> </td>
+                            <td>{{ $commande->montant()  }} <x-devise></x-devise> </td>
                             <td>
 
                                 @can('order_edit')
@@ -295,12 +295,11 @@
 
                             </td>
                             <td>
-                                @if ($commande->coupon)
-                                    {{ $commande->coupon }}
+                                
+                                    {{ $commande->commission() }}
+                                        
                                     <x-devise></x-devise>
-                                @else
-                                    ---
-                                @endif
+                               
                             </td>
                             {{--  <td>{{ $commande->created_at }} </td> --}}
                             <td style="text-align: right;">

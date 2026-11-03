@@ -19,7 +19,8 @@ class CheckDomain
         //verification si le site est en production pour la restriction des domaines autres.
         
         if ( config("app.env") == "production" ) {
-            $allowedDomain = 'new-laptop-deals.com';
+            $allowedDomain = 'home-dmbj.fr'; // Remplacez par le domaine autorisé
+            
             $requestDomain = $request->getHttpHost();
 
             if ($requestDomain !== $allowedDomain) {

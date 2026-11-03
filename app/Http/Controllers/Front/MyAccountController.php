@@ -89,13 +89,7 @@ class MyAccountController extends Controller
     // 💰 SOLDE depuis users table
     $solde = $user->solde ?? 0;
 
-    $pointsHistories = Historique_points::where('user_id', $userId)
-    ->latest()
-    ->get();
-
-$walletHistories = Historique_solde::where('user_id', $userId)
-    ->latest()
-    ->get();
+ 
 
         return view('front.comptes.account', compact(
             'commandes',
@@ -105,8 +99,8 @@ $walletHistories = Historique_solde::where('user_id', $userId)
             'commandesEnCours',
             'solde',
             'totalPoints',
-            'pointsHistories',
-            'walletHistories'
+          
+           
 
         ));
     }

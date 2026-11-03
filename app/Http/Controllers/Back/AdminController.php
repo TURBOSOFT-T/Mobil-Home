@@ -9,7 +9,7 @@ use App\Models\commandes;
 use App\Models\historiques_stock;
 use App\Models\config;
 use App\Models\historiques_connexion;
-use App\Models\{produits, Category,Marque, Contact, favoris, Service, Coupon, Testimonial, Visitor,Sous_category};
+use App\Models\{produits, Category, Marque, Contact, favoris, Service, Coupon, Testimonial, Visitor, Sous_category};
 use App\Models\User;
 use App\Models\views;
 use Illuminate\Http\Request;
@@ -36,51 +36,42 @@ class AdminController extends Controller
 {
     use ListGouvernorats;
 
-        /////////////////Transports////////////////
+    /////////////////Transports////////////////
 
-public function transports()
-{
-    return view('admin.transports.list');
-}
 
-   
 
-     public function favories(){
-        $favorie= favoris::where('user_id', auth()->id() )->get();
-        return view('front.comptes.favoris' , compact('favoris'));
-     }
 
-     public function admin_contact_form(){
+
+    public function admin_contact_form()
+    {
         $contacts = Contact::paginate(100);
         return view('admin.contacts.list', compact('contacts'));
-     }
+    }
 
-     public function supprimer_messages(Request $request , $id){
+    public function supprimer_messages(Request $request, $id)
+    {
         $contact = Contact::findOrFail($id);
         $contact->delete();
 
         return redirect()->back()->with('success', 'Message supprimé avec succès');;
-
-     }
+    }
 
     public function dashboard(Request $request)
     {
 
         //veification des permissions
-          if (auth()->user()->can('dashboard')) {
-        }
-         elseif (auth()->user()->can('product_view')) 
-         {
+        if (auth()->user()->can('dashboard')) {
+        } elseif (auth()->user()->can('product_view')) {
             return redirect()->route('produits');
-        }elseif (auth()->user()->can('order_view')) {
+        } elseif (auth()->user()->can('order_view')) {
             return redirect()->route('commandes');
         } elseif (auth()->user()->can('clients_view')) {
             return redirect()->route('clients');
         } else {
-           // return "Veuillez demande a l'administrateur de vous attribuer des permissions.";
-           return redirect('/');
-        } 
- 
+            // return "Veuillez demande a l'administrateur de vous attribuer des permissions.";
+            return redirect('/');
+        }
+
 
         $currentYear = date('Y');
 
@@ -138,9 +129,9 @@ public function transports()
 
             //calcul du profil net de tous les produit
             $stat_commande_non_confirmer_Month[] =  Commandes::whereYear('created_at', $currentYear)
-            ->whereMonth('created_at', $i)
-            ->where('etat', 'annulé')
-            ->count();
+                ->whereMonth('created_at', $i)
+                ->where('etat', 'annulé')
+                ->count();
             $profilNet[] = contenu_commande::whereBetween('created_at', [$date_debut, $date_fin])
                 ->whereMonth('created_at', $i)
                 ->whereHas('commandes', function ($query) {
@@ -159,15 +150,6 @@ public function transports()
         }
         $totalUser = User::whereBetween('created_at', [$date_debut, $date_fin])->count();
 
-$totalVisitors = Visitor::count();
-$todayVisitors = Visitor::whereDate('created_at', today())->count();
-$weekVisitors = Visitor::whereBetween('created_at', [
-    now()->startOfWeek(),
-    now()->endOfWeek()
-])->count();
-$monthVisitors = Visitor::whereMonth('created_at', now()->month)
-    ->whereYear('created_at', now()->year)
-    ->count();
         //get all command group by gouvernorrant collun Asc 
         $top_gouvernorat = [];
         $gouvernorats = commandes::select('gouvernorat', DB::raw('COUNT(*) as count'))
@@ -216,7 +198,7 @@ $monthVisitors = Visitor::whereMonth('created_at', now()->month)
         $etat_commandes = commandes::selectRaw('etat, COUNT(*) as count')
             ->whereBetween('created_at', [$date_debut, $date_fin])
             ->groupBy('etat')
-            ->whereIn('etat', ['confirmé', 'annulé','attente'])
+            ->whereIn('etat', ['confirmé', 'annulé', 'attente'])
             ->get()
             ->pluck('count', 'etat')
             ->toArray();
@@ -242,7 +224,7 @@ $monthVisitors = Visitor::whereMonth('created_at', now()->month)
             'attente' => $total_attente,
 
             'pourcentage_confirmer' => $pourcentage_confirmer,
-            'pourcentage_non-confirmer' => $pourcentage_non_confirmer, 
+            'pourcentage_non-confirmer' => $pourcentage_non_confirmer,
             'pourcentage_attente' => $pourcentage_attente,
 
         ];
@@ -252,8 +234,8 @@ $monthVisitors = Visitor::whereMonth('created_at', now()->month)
 
         $request->session()->flash('date_debut', $request->input('date_debut'));
         $request->session()->flash('date_fin', $request->input('date_fin'));
-        
-  
+
+
         return view('admin.index')
             ->with("totalUser", $totalUser)
             ->with('visitsPerMonth', $visitsPerMonth)
@@ -272,12 +254,7 @@ $monthVisitors = Visitor::whereMonth('created_at', now()->month)
             ->with('stat_commande_confirmer_Month', $stat_commande_confirmer_Month)
             ->with('etat_commandes', $etat_commandes)
             ->with('top_gouvernorat', $top_gouvernorat)
-            ->with('totalDesCommandes', $totalDesCommandes)
-
-
-            ->with('totalVisitors', $totalVisitors);
-           
-            
+            ->with('totalDesCommandes', $totalDesCommandes);
     }
 
 
@@ -348,9 +325,9 @@ $monthVisitors = Visitor::whereMonth('created_at', now()->month)
     }
 
 
- 
 
-      public function commandes_en_lives()
+
+    public function commandes_en_lives()
     {
         return view('admin.commandes.lives');
     }
@@ -366,135 +343,137 @@ $monthVisitors = Visitor::whereMonth('created_at', now()->month)
             $message = "Commande introuvable";
             abort('404', $message);
         }
-        if ($commande->statut == 'retournée' && $commande->statut == 'payée'&& $commande->statut == 'traitement') {
-           
+        if ($commande->statut == 'retournée' && $commande->statut == 'payée' && $commande->statut == 'traitement') {
+
             $this->sendOrderConfirmationMail($commande);
             return redirect()->route('commandes');
-       
         }
         $this->sendOrderConfirmationMail($commande);
-        
-   
+
+
         return view('admin.commandes.edit', compact('commande'));
     }
 
-    public function sendOrderConfirmationMail($commande){
-      //  Mail::to ($commande->email)->send(new OrderChangeStatut($commande));
-      }
-//////////Categories/////////////
-public function category_add()
-{
-    return view('admin.categories.add');
-}
-
-public function categories()
-{
-    return view('admin.categories.list');
-}
-
-public function categories_update($id)
-{
-    $category = Category::find($id);
-    if (!$category) {
-        $message = "Category non disponible !";
-        abort(404, $message);
+    public function sendOrderConfirmationMail($commande)
+    {
+        //  Mail::to ($commande->email)->send(new OrderChangeStatut($commande));
     }
-    return view('admin.categories.update', compact('category'));
-}
-
-
-
-public function sous_categories()
-{
-    return view('admin.sous_categories.list');
-}
-
-public function sous_categories_update($id)
-{
-    $sous_category = Sous_category::find($id);
-    if (!$sous_category) {
-        $message = "Sous-categorie non disponible!";
-        abort(404, $message);
+    //////////Categories/////////////
+    public function category_add()
+    {
+        return view('admin.categories.add');
     }
-    //  dd($sous_category);
-    return view('admin.sous_categories.update', compact('sous_category'));
-}
 
-public function sous_category_add()
-{
-    return view('admin.sous_categories.add');
-}
-
-/////////////////Familless////////////////
-
-public function familles()
-{
-    return view('admin.familles.list');
-}
-
-///////////////Marques/////////////////////
-
-public function marques()
-{
-    return view('admin.marques.list');
-}
-
-
-public function service_add()
-{
-    return view('admin.services.add');
-}
-
-public function services()
-{
-    return view('admin.services.list');
-}
-
-public function service_update($id)
-{
-    $service = Service::find($id);
-    if (!$service) {
-        $message = "Service non disponible !";
-        abort(404, $message);
+    public function categories()
+    {
+        return view('admin.categories.list');
     }
-    return view('admin.services.update', compact('service'));
-}
 
-////////////////coupons //////////////////
-
-public function coupons()
-{
-    $coupons=Coupon::orderBy('id','DESC')->paginate('10');
-    return view('admin.coupons.list', compact('coupons'));
-}
-
-public function coupon_add(){
-     $commercials = User::where('role', 'personnel')->get();
-    return view('admin.coupons.add', compact('commercials'));
-}
-
-public function coupons_update($id){
-    $coupon = Coupons::find($id);
-    if (!$coupon) {
-        $message = "Coupon non disponible !";
-        abort(404, $message);
+    public function categories_update($id)
+    {
+        $category = Category::find($id);
+        if (!$category) {
+            $message = "Category non disponible !";
+            abort(404, $message);
+        }
+        return view('admin.categories.update', compact('category'));
     }
-    return view('admin.coupons.update', compact('coupon'));
-}
-
-
-///////////////Testimonials////////////
-
-public function testimonials()
-{
-    $testimonials = Testimonial::paginate(10);
-    return view('admin.testimonials.list', compact('testimonials') );
-}
 
 
 
+    public function sous_categories()
+    {
+        return view('admin.sous_categories.list');
+    }
 
-//////////Produits/////////////////
+    public function sous_categories_update($id)
+    {
+        $sous_category = Sous_category::find($id);
+        if (!$sous_category) {
+            $message = "Sous-categorie non disponible!";
+            abort(404, $message);
+        }
+        //  dd($sous_category);
+        return view('admin.sous_categories.update', compact('sous_category'));
+    }
+
+    public function sous_category_add()
+    {
+        return view('admin.sous_categories.add');
+    }
+
+    /////////////////Familless////////////////
+
+    public function familles()
+    {
+        return view('admin.familles.list');
+    }
+
+    ///////////////Marques/////////////////////
+
+    public function marques()
+    {
+        return view('admin.marques.list');
+    }
+
+
+    public function service_add()
+    {
+        return view('admin.services.add');
+    }
+
+    public function services()
+    {
+        return view('admin.services.list');
+    }
+
+    public function service_update($id)
+    {
+        $service = Service::find($id);
+        if (!$service) {
+            $message = "Service non disponible !";
+            abort(404, $message);
+        }
+        return view('admin.services.update', compact('service'));
+    }
+
+    ////////////////coupons //////////////////
+
+    public function coupons()
+    {
+        $coupons = Coupon::orderBy('id', 'DESC')->paginate('10');
+        return view('admin.coupons.list', compact('coupons'));
+    }
+
+    public function coupon_add()
+    {
+        $commercials = User::where('role', 'personnel')->get();
+        return view('admin.coupons.add', compact('commercials'));
+    }
+
+    public function coupons_update($id)
+    {
+        $coupon = Coupon::find($id);
+        if (!$coupon) {
+            $message = "Coupon non disponible !";
+            abort(404, $message);
+        }
+        return view('admin.coupons.update', compact('coupon'));
+    }
+
+
+    ///////////////Testimonials////////////
+
+    public function testimonials()
+    {
+        $testimonials = Testimonial::paginate(10);
+        return view('admin.testimonials.list', compact('testimonials'));
+    }
+
+
+
+
+    //////////Produits/////////////////
     public function produit_add()
     {
         return view('admin.produits.add');
@@ -515,48 +494,7 @@ public function testimonials()
         return view('admin.produits.update', compact('produit'));
     }
 
-    public function ajouterStock(Request $request, $id)
-    {
-    
-          $request->validate([
-            'quantite' => 'required|integer|min:1',
-        ]);
-
-        /* $pro = produits::findOrFail($id);
-      
-        $pro->stock = $pro->stock + $request->quantite;
-       
-        $pro->save();
- */
-       
-        $produit = produits::findOrFail($id);
-        dd($produit);
-        $produit->stock = $produit->stock + $request->quantite; 
-       // $produit->updated_at = Carbon::now();  // Met à jour la date de modification du produit
-        // Ajoute la quantité au stock actuel
-        $produit->save();
-
-        //enregistrer lhistorique du stock 
-      ////  $historique_stock = new historiques_stock();
-       // $historique_stock->quantite = $request->quantite;
-      //  $historique_stock->id_produit = $pro->id;
-      //  $historique_stock->save();
-
-
-       
-        return redirect()->route('produits', ['id' => $produit->id])
-                         ->with('success', 'Stock ajouté avec succès!');
-    }
-    
-    public function historique($id)
-    {
-        $produit = produits::find($id);
-        if (!$produit) {
-            $message = "Produit non disponible !";
-            abort(404, $message);
-        }
-        return view('admin.produits.historique', compact('produit'));
-    }
+   
 
 
 
@@ -579,8 +517,8 @@ public function testimonials()
     public function personnels()
     {
         // $personnels = User::where('role', 'personnel')->get();
-            $total_supprimers = User::onlyTrashed()->count();
-        $personnels = User::whereNotIn('role', ['client', 'admin'])->get();
+        $total_supprimers = User::onlyTrashed()->count();
+        $personnels = User::whereNotIn('role', ['client'])->get();
         return view('admin.personnels.list', compact('personnels', 'total_supprimers'));
     }
 
@@ -590,30 +528,9 @@ public function testimonials()
     }
 
 
-    public function shops()
-    {
-        $shops = Shop::all();
-        return view('admin.shops.list', compact('shops'));
-    }
+   
 
 
-    public function updateRoleShop(Request $request, $id)
-    {
-        // Validation
-        $request->validate([
-            'role' => 'required|string'
-        ]);
-
-        // Recherche utilisateur
-        $user = Shop::findOrFail($id);
-
-        // Mise à jour
-        $user->role = $request->role;
-        $user->save();
-
-        // Redirection + message
-        return redirect()->back()->with('success', 'Rôle mis à jour avec succès');
-    }
 
     public function details_commande($id)
     {
@@ -644,15 +561,15 @@ public function testimonials()
     public function clients()
     {
         $clients = User::where('role', 'client')->get();
-         $comptes = clients::all();
-        return view('admin.clients.list', compact('clients','comptes'));
+        $comptes = clients::all();
+        return view('admin.clients.list', compact('clients', 'comptes'));
     }
 
-  public function comptes()
+    public function comptes()
     {
         $clients = User::where('role', 'client')->get();
-         $comptes = User::all();
-        return view('admin.comptes.list', compact('clients','comptes'));
+        $comptes = User::all();
+        return view('admin.comptes.list', compact('clients', 'comptes'));
     }
 
 
@@ -700,6 +617,4 @@ public function testimonials()
             ->back()
             ->with('success', 'Permissions mises à jour avec succès.');
     }
-
-    
 }

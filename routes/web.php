@@ -16,7 +16,6 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Front\{
 
     ContactController,
-    panier_client,
     CommandeController,
     LocaleController,
     MyAccountController,
@@ -36,10 +35,15 @@ use App\Http\Controllers\Front\{
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+use App\Http\Controllers\Front\RechercheController;
 
+Route::get('/recherche', [RechercheController::class, 'index'])->name('recherche');
+Route::get('/produit/json/{id}', [RechercheController::class, 'detailsJson'])->name('produit.json');
 Route::post('/locale', [LocaleController::class, 'change'])->name("locale.change");
 
+use App\Http\Controllers\Front\ReservationController;
 
+Route::post('/reservation/store', [ReservationController::class, 'store'])->name('reservation.store');
 
 
 Route::get('contact', [ContactController::class, 'contact'])->name("contact");
@@ -78,20 +82,10 @@ Route::get('/shop/reset', [HomeController::class, 'resetShop'])->name('shop.rese
 
 
 
-//gestion du panier
-Route::get('cart', [panier_client::class, 'cart'])->name('cart');
-Route::post('/client/ajouter_au_panier', [panier_client::class, 'add']);
-Route::get('/client/count_panier', [panier_client::class, 'count_panier']);
-Route::get('/client/mon_panier', [panier_client::class, 'contenu_mon_panier']);
-Route::get('/client/delete_produit_au_panier', [panier_client::class, 'delete_produit']);
-
-
 
 Route::get('/commander', [CommandeController::class, 'commander'])->name('commander');
 Route::post('/order', [CommandeController::class, 'confirmOrder'])->name('order.confirm');
 Route::get('/thank-you', [CommandeController::class, 'index'])->name('thank-you');
-//Route::get('cart', [CommandeController::class, 'cart'])->name('cart');
-Route::delete('/cart/clear', [CommandeController::class, 'clear'])->name('cart.clear');
 
 Route::post('/savecoupon', [CouponController::class, 'savecoupon'])->name('savecoupon');
 Route::post('/apply-coupon', [CouponController::class, 'applyCoupon'])->name('apply.coupon');
@@ -134,11 +128,6 @@ Route::middleware(['auth'])->group(function () {
         ->middleware('permission:category_edit');
 
 
-    ///////////////////Transports/////////////////
-    Route::get('/admin/transports', [AdminController::class, 'transports'])
-        ->name('transports');
-    Route::get('/admin/transport/add', [AdminController::class, 'transport_add']);
-
 
     /////////sous_categories/////////////////////////
     Route::get('/admin/sous_categories', [AdminController::class, 'sous_categories'])
@@ -178,16 +167,6 @@ Route::middleware(['auth'])->group(function () {
         ->name('service.update')
         ->middleware('permission:service_edit');
 
-    ///////////////////Les coupons////////////////////////////////////////////////
-    Route::get('/admin/coupons', [AdminController::class, 'coupons'])
-        ->name('coupons');
-
-    Route::post('/savecoupon', [CouponController::class, 'savecoupon'])->name('savecoupon');
-    Route::get('/updatecoupon/{id}', [CouponController::class, 'updatecoupon'])->name('updatecoupon');
-    Route::delete('/deletecoupon/{id}', [CouponController::class, 'destroy'])->name('coupon.destroy');
-    Route::get('/putcoupon/{id}', [CouponController::class, 'putcoupon'])->name('putcoupon');
-
-    Route::resource('/coupons', CouponController::class);
 
 
     /////////Testimonials///////////////////
@@ -200,17 +179,6 @@ Route::middleware(['auth'])->group(function () {
     // Route::get('testimoniale/{id}/destroy', [TestimonialController::class, 'destroy'])->name('testimoniale.destroy');
 
 
-
-    Route::get('/admin/coupon/add', [AdminController::class, 'coupon_add'])
-        ->name('coupon.add');
-
-
-    ///////////////////Les produits////////////////////////////
-
-
-    /////////////////////////Les marques//////////////////////////////////////
-    Route::get('/admin/marques', [AdminController::class, 'marques'])
-        ->name('marques');
 
 
 

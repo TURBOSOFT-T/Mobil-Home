@@ -60,11 +60,21 @@ class commandes extends Model
     {
         $total = $this->frais;
         foreach ($this->contenus as $contenu) {
-            if ($contenu->produit->free_shipping == true) {
-                $total += $contenu->prix_unitaire * $contenu->quantite - $this->frais;
-            } else {
-                $total += $contenu->prix_unitaire * $contenu->quantite;
-            }
+          
+                $total += $contenu->produit->prix ;
+         
+        }
+        return $total ?? 0;
+    }
+
+
+     public function commission()
+    {
+        $total = $this->frais;
+        foreach ($this->contenus as $contenu) {
+          
+                $total += $contenu->produit->commission ;
+         
         }
         return $total ?? 0;
     }

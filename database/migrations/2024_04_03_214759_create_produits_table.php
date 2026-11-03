@@ -15,68 +15,88 @@ return new class extends Migration
 
             $table->id();
 
-            $table->string('nom');
+            // Tiers / Propriétaire / Agent qui publie le bien
+            $table->unsignedBigInteger('user_id')->nullable(); // Lié à la table users
 
+            // Informations principales du bien
+            $table->string('nom'); // Ex: "Studio meublé moderne", "Duplex de standing"
+            $table->string('slug')->unique(); // URL propre
             $table->text('description')->nullable();
             $table->text('meta_description')->nullable();
 
-            $table->string('reference')->unique();
+         
 
-            $table->integer('prix');
+            // Type de bien et d'offre
+            $table->enum('type_habitation', [
+                'chambre',
+                'studio',
+                'appartement',
+                'duplex',
+                'villa',
+                'bureau',
+                'commerce',
+                'terrain',
+                'maison',
+                'boutique',
+                'local_commercial',
+                'autre'
+            ])->default('appartement');
+            
+            $table->enum('type_offre', ['location', 'vente'])->default('location');
 
-            $table->integer('prix_achat');
+            // Tarification
+            $table->decimal('prix', 12, 2); // Loyer mensuel ou prix de vente
+            $table->decimal('caution', 12, 2)->nullable(); // Caution / Dépôt de garantie
+            $table->decimal('charges', 12, 2)->nullable(); // Charges locatives éventuelles
 
-            $table->integer('points')->default(0);
-
-            // image principale
-            $table->string('photo')->nullable();
-
-            // galerie images
-            $table->json('photos')->nullable();
-            $table->json('caracteristiques')->nullable();
-             $table->boolean('avec_caracteristique')->default(false);
-            $table->string('taille')->nullable();
-            $table->string('couleur')->nullable();
+            // Gestion de la Commission (pour les tiers)
             $table->boolean('avec_commission')->default(false);
-            // On le met en nullable car si 'avec_commission' est false, ce champ sera vide
-            $table->integer('commission')->nullable(); // Utilise decimal('commission', 8, 2) si tu as des centimes
+            $table->enum('type_commission', ['pourcentage', 'fixe'])->default('pourcentage');
+            $table->decimal('commission', 12, 2)->nullable(); // Montant ou pourcentage prélevé par la plateforme
+
+            // Caractéristiques physiques du bien
+            $table->decimal('surface', 8, 2)->nullable(); // En m²
+            $table->integer('chambres')->nullable(); // Nombre de chambres
+            $table->integer('salles_de_bain')->nullable(); // Nombre de salles de bain
+            $table->integer('etage')->nullable(); // Numéro d'étage (si applicable)
+
+            // Localisation
+            $table->string('ville')->nullable();
+            $table->string('quartier')->nullable();
+            $table->text('adresse_complete')->nullable();
+
+            // Médias
+            $table->string('photo')->nullable(); // Image principale
+            $table->json('photos')->nullable(); // Galerie d'images supplémentaires
+
+            // Options et équipements
+            $table->json('caracteristiques')->nullable();
+            $table->boolean('avec_caracteristique')->default(false);
+            
             /*
             |--------------------------------------------------------------------------
             | RELATIONS
             |--------------------------------------------------------------------------
             */
-
-            $table->unsignedBigInteger('id_shop')->nullable(); // Doit être nullable !
-            $table->unsignedBigInteger('id_promotion')->nullable();
-
             $table->unsignedBigInteger('category_id')->nullable();
+            $table->unsignedBigInteger('sous_category_id')->nullable();
+            $table->unsignedBigInteger('famille_id')->nullable();
 
-            $table->unsignedBigInteger("sous_category_id")->nullable();
-            $table->unsignedBigInteger("sous_categorie_id")->nullable();
-            $table->unsignedBigInteger("famille_id")->nullable();
-            $table->unsignedBigInteger('marque_id')->nullable();
-
-            // stock
-            $table->integer('stock')->default(0);
-
-            // statut
+            // Statut et Disponibilité
             $table->enum('statut', [
                 'disponible',
+                'loue',
+                'vendu',
                 'indisponible'
-            ])->default('indisponible');
+            ])->default('disponible');
 
-            // options
-            $table->boolean('top')->default(false);
-
-            $table->boolean('active')->default(false);
-
+            // Options d'affichage / mise en avant
+            $table->boolean('top')->default(false); // Coup de cœur / En vedette
+            $table->boolean('active')->default(false); // Publication active sur le site (soumise à modération si tiers)
             $table->boolean('new')->default(false);
             $table->boolean('is_new')->default(false);
 
-            $table->boolean('free_shipping')->default(false);
-
             $table->softDeletes();
-
             $table->timestamps();
 
             /*
@@ -84,19 +104,10 @@ return new class extends Migration
             | FOREIGN KEYS
             |--------------------------------------------------------------------------
             */
-
-            /*  $table->foreign('id_shop')
+            $table->foreign('user_id')
                 ->references('id')
-                ->on('shops')
-                ->nullOnDelete(); */
-
-            $table->foreign('id_promotion')
-                ->references('id')
-                ->on('promotions')
-                ->nullOnDelete();
-            
- 
-          
+                ->on('users')
+                ->cascadeOnDelete();
         });
     }
 
