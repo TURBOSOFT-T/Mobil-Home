@@ -476,13 +476,13 @@ $currentLocale = app()->getLocale();
 
                                  </li class="menu-item">
                                 <li><a href="{{ route('about') }}">
-                                        {{ \App\Helpers\TranslationHelper::TranslateText('A propos de nous') }}
+                                      {{ __('about') }}
                                     </a></li>
 
 
 
                                 <li><a href="{{ route('contact') }}">
-                                        {{ \App\Helpers\TranslationHelper::TranslateText('Contact') }}
+                                        {{ __('contact') }}
                                     </a></li>
 
 

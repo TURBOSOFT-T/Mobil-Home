@@ -2,9 +2,9 @@
     <div class="card h-100 shadow-sm border-0">
         <div class="position-relative">
             @if($produit->photo)
-            <img src="{{ Storage::url($produit->photo) }}" class="card-img-top" alt="{{ $produit->nom }}" style="height: 200px; object-fit: cover;">
+            <img src="{{ Storage::url($produit->photo) }}" class="card-img-top" alt="{{ $produit->nom }}" style="height: 200px; object-fit: cover;" loading="lazy">
             @else
-            <img src="/icons/no-image.webp" class="card-img-top" alt="Aucune image" style="height: 200px; object-fit: cover;">
+            <img src="{{ asset('icons/no-image.webp') }}" class="card-img-top" alt="Aucune image" style="height: 200px; object-fit: cover;" loading="lazy">
             @endif
             <span class="position-absolute top-0 start-0 m-2 badge bg-dark text-capitalize">
                 {{ $produit->type_habitation }}
@@ -19,9 +19,9 @@
             <p class="card-text text-muted small flex-grow-1">
                 {!! Str::limit(strip_tags($produit->description), 80) !!}
                 <!-- Bouton pour ouvrir le modal -->
-                  <div class="d-flex gap-2 mt-auto">
+            <div class="d-flex gap-2 mt-auto">
                 <button type="button" class="axil-btn btn-bg-primary2" wire:click="voirDetails({{ $produit->id }})">
-                    
+
                     {{ \App\Helpers\TranslationHelper::TranslateText('Détails') }}
                 </button>
 
@@ -31,10 +31,10 @@
                     data-bs-target="#reservationModal"
                     data-id="{{ $produit->id }}"
                     data-nom="{{ $produit->nom }}">
-                    
+
                     {{ \App\Helpers\TranslationHelper::TranslateText('Réserver') }}
                 </button>
-                </div>
+            </div>
         </div>
     </div>
 
@@ -50,13 +50,13 @@
                 <div class="modal-body">
                     <div class="row">
                         <!-- Image -->
-                        <div class="col-md-6 mb-3 mb-md-0">
-                            @if($selectedProduit->photo)
-                            <img src="{{ Storage::url($selectedProduit->photo) }}" class="img-fluid rounded w-100" style="height: 280px; object-fit: cover;" alt="{{ $selectedProduit->nom }}">
-                            @else
-                            <img src="/icons/no-image.webp" class="img-fluid rounded w-100" style="height: 280px; object-fit: cover;" alt="Aucune image">
-                            @endif
-                        </div>
+                      <div class="col-md-6 mb-3 mb-md-0">
+    @if($selectedProduit->photo)
+    <img src="{{ Storage::url($selectedProduit->photo) }}" class="img-fluid rounded w-100" style="height: 280px; object-fit: cover;" alt="{{ $selectedProduit->nom }}">
+    @else
+    <img src="{{ asset('icons/no-image.webp') }}" class="img-fluid rounded w-100" style="height: 280px; object-fit: cover;" alt="Aucune image">
+    @endif
+</div>
                         <!-- Infos -->
                         <div class="col-md-6">
                             <span class="badge bg-dark text-capitalize mb-2">{{ $selectedProduit->type_habitation }}</span>
@@ -100,59 +100,59 @@
 
 
     <!-- Modal Bootstrap pour la Réservation -->
-<div class="modal fade" id="reservationModal" tabindex="-1" aria-labelledby="reservationModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 shadow-lg">
-            <div class="modal-header bg-success text-white">
-                <h5 class="modal-title fw-bold" id="reservationModalLabel">Réserver ce bien</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+    <div class="modal fade" id="reservationModal" tabindex="-1" aria-labelledby="reservationModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title fw-bold" id="reservationModalLabel">Réserver ce bien</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="{{ route('reservation.store') }}" method="POST">
+                    @csrf
+                    <div class="modal-body">
+                        <input type="hidden" name="produit_id" id="reservationProduitId">
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Bien concerné :</label>
+                            <input type="text" id="reservationProduitNom" class="form-control-plaintext fw-bold text-success" readonly>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Votre Nom complet</label>
+                            <input type="text" name="nom" class="form-control" required placeholder="Ex: Thomas Tuemo">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Votre Téléphone</label>
+                            <input type="tel" name="phone" class="form-control" required placeholder="Ex: +237 ...">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Message / Date souhaitée</label>
+                            <textarea name="note" class="form-control" rows="3" placeholder="Précisez votre date de visite ou vos questions..."></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer bg-light">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Annuler</button>
+                        <button type="submit" class="axil-btn btn-bg-primary2">Envoyer la réservation</button>
+                    </div>
+                </form>
             </div>
-            <form action="{{ route('reservation.store') }}" method="POST">
-                @csrf
-                <div class="modal-body">
-                    <input type="hidden" name="produit_id" id="reservationProduitId">
-                    
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Bien concerné :</label>
-                        <input type="text" id="reservationProduitNom" class="form-control-plaintext fw-bold text-success" readonly>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Votre Nom complet</label>
-                        <input type="text" name="nom" class="form-control" required placeholder="Ex: Thomas Tuemo">
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Votre Téléphone</label>
-                        <input type="tel" name="phone" class="form-control" required placeholder="Ex: +237 ...">
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Message / Date souhaitée</label>
-                        <textarea name="note" class="form-control" rows="3" placeholder="Précisez votre date de visite ou vos questions..."></textarea>
-                    </div>
-                </div>
-                <div class="modal-footer bg-light">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Annuler</button>
-                    <button type="submit" class="axil-btn btn-bg-primary2">Envoyer la réservation</button>
-                </div>
-            </form>
         </div>
     </div>
-</div>
 
-<!-- Script JS pour injecter l'ID et le nom dans la modale de réservation -->
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    const reservationModal = document.getElementById('reservationModal');
-    reservationModal.addEventListener('show.bs.modal', function (event) {
-        const button = event.relatedTarget;
-        const produitId = button.getAttribute('data-id');
-        const produitNom = button.getAttribute('data-nom');
+    <!-- Script JS pour injecter l'ID et le nom dans la modale de réservation -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const reservationModal = document.getElementById('reservationModal');
+            reservationModal.addEventListener('show.bs.modal', function(event) {
+                const button = event.relatedTarget;
+                const produitId = button.getAttribute('data-id');
+                const produitNom = button.getAttribute('data-nom');
 
-        document.getElementById('reservationProduitId').value = produitId;
-        document.getElementById('reservationProduitNom').value = produitNom;
-    });
-});
-</script>
+                document.getElementById('reservationProduitId').value = produitId;
+                document.getElementById('reservationProduitNom').value = produitNom;
+            });
+        });
+    </script>
 </div>

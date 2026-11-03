@@ -32,26 +32,29 @@
                                 }
                             </style>
                         </ul>
-                        </div>
+                    </div>
                 </div>
                 <style>
-    .about-hero-img {
-        width: 100%;
-        height: auto;
-        max-height: 450px; /* Limite la hauteur maximale pour garder un rendu équilibré */
-        object-fit: cover; /* Remplit le cadre proprement sans déformer l'image */
-        border-radius: 10px; /* Optionnel : ajoute un léger arrondi pour un rendu plus pro */
-    }
-</style>
+                    .about-hero-img {
+                        width: 100%;
+                        height: auto;
+                        max-height: 450px;
+                        /* Limite la hauteur maximale pour garder un rendu équilibré */
+                        object-fit: cover;
+                        /* Remplit le cadre proprement sans déformer l'image */
+                        border-radius: 10px;
+                        /* Optionnel : ajoute un léger arrondi pour un rendu plus pro */
+                    }
+                </style>
                 <div class="col-lg-6 col-md-4">
                     <div class="inner">
                         <div class="bradcrumb-thumb">
                             <img src="{{ Storage::url($config->image_about ?? '') }}" class="about-hero-img" alt="À propos de nous">
                         </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
     </div>
     <!-- End Breadcrumb Area  -->
 
@@ -108,8 +111,7 @@
                             {{ \App\Helpers\TranslationHelper::TranslateText($config->titre_apropos2) }}
                         </h4>
                         <p style="text-align: justify">{!! $config->des_apropos2 !!}</p>
-                        <a href="{{ route('shop') }}" class="axil-btn btn-bg-primary2"> {{ \App\Helpers\TranslationHelper::TranslateText('Voir boutique') }}</a>
-                    </div>
+                        </div>
                 </div>
             </div>
             <div class="row align-items-center mb--80 mb_sm--60">
@@ -125,7 +127,6 @@
                         <p style="text-align: justify">
                             {!! \App\Helpers\TranslationHelper::TranslateText($config->des_apropos1 ?? ' ') !!}
                         </p>
-                        <a href="{{ route('shop') }}" class="axil-btn  btn-bg-primary2 "> {{ \App\Helpers\TranslationHelper::TranslateText('Voir boutique') }}</a>
                     </div>
                 </div>
             </div>

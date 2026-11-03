@@ -65,11 +65,11 @@ $config = DB::table('configs')->first();
         <div class="col-md-4 mb-4">
             <div class="card h-100 shadow-sm border-0">
                 <div class="position-relative">
-                    @if($produit->photo)
-                    <img src="{{ Storage::url($produit->photo) }}" class="card-img-top" alt="{{ $produit->nom }}" style="height: 200px; object-fit: cover;">
-                    @else
-                    <img src="/icons/no-image.webp" class="card-img-top" alt="Aucune image" style="height: 200px; object-fit: cover;">
-                    @endif
+                   @if($produit->photo)
+    <img src="{{ Storage::url($produit->photo) }}" class="card-img-top" alt="{{ $produit->nom }}" style="height: 200px; object-fit: cover;" loading="lazy">
+@else
+    <img src="{{ asset('icons/no-image.webp') }}" class="card-img-top" alt="Aucune image" style="height: 200px; object-fit: cover;" loading="lazy">
+@endif
                     <span class="position-absolute top-0 start-0 m-2 badge bg-dark text-capitalize">
                         {{ $produit->type_habitation }}
                     </span>
