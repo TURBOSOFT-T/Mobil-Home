@@ -1,6 +1,7 @@
 <?php
+namespace App\Http\Controllers\Front;
 
-namespace App\Http\Controllers;
+use App\Http\Controllers\Controller;
 
 use App\Models\Famille;
 use App\Http\Requests\StoreFamilleRequest;
