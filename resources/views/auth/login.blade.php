@@ -120,7 +120,7 @@ $produit = DB::table('produits')->get();
                     <div class="axil-signin-form">
                         <h5 class="title">
                             <br><br>
-                         {{ \App\Helpers\TranslationHelper::TranslateText('Connectez-vous  ') }} </h5>
+                         {{ \App\Helpers\TranslationHelper::TranslateText('Connectez-vous à ') }} Mobil-Home</h5>
                          <br>
                          
                         
