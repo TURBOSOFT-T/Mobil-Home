@@ -58,12 +58,11 @@
                 <div class="row row--30">
                    <div class="col-lg-8">
     <div class="contact-form">
-        <h3 class="title mb--10">
-            {{ \App\Helpers\TranslationHelper::TranslateText('Prêt à booster vos performances ?') }}
-        </h3>
+       
         
         <p>
-            {{ \App\Helpers\TranslationHelper::TranslateText('Que vous recherchiez l\'ordinateur idéal pour vos projets, une configuration sur-mesure ou que vous souhaitiez collaborer avec nous, écrivez-nous. Notre équipe d\'experts est à votre écoute pour vous guider.') }}
+            {{ \App\Helpers\TranslationHelper::TranslateText('Mobil-Home réinvente votre façon de vivre et d\'investir dans l\'immobilier de loisirs, en vous proposant des résidences modernes, confortables et clés en main pour vos projets de vie et de vacances.
+            ') }}
         </p>
 
         @livewire('Front.ContactForm')

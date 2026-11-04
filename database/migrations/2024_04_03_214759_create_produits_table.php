@@ -45,7 +45,7 @@ return new class extends Migration
             $table->enum('type_offre', ['location', 'vente'])->default('location');
 
             // Tarification
-            $table->decimal('prix', 12, 2); // Loyer mensuel ou prix de vente
+            $table->decimal('prix', 12, 2)->nullable(); // Loyer mensuel ou prix de vente
             $table->decimal('caution', 12, 2)->nullable(); // Caution / Dépôt de garantie
             $table->decimal('charges', 12, 2)->nullable(); // Charges locatives éventuelles
 

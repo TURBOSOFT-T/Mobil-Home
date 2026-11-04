@@ -62,19 +62,12 @@ class MyAccountController extends Controller
             ->latest()
             ->paginate(10);
 
-        // ❤️ Favoris paginés
-        $favoris = ModelsFavoris::where('id_user', $userId)
-            ->latest()
-            ->paginate(10);
 
         // 📊 Commandes livrées ou payées
         $totalCommand = commandes::where('user_id', $userId)
             ->whereIn('statut', ['livrée', 'payée'])
             ->count();
 
-        // ❤️ Total favoris
-        $totalFavoris = ModelsFavoris::where('id_user', $userId)
-            ->count();
 
         // 🚚 Commandes en cours
         $commandesEnCours = commandes::where('user_id', $userId)
@@ -93,9 +86,9 @@ class MyAccountController extends Controller
 
         return view('front.comptes.account', compact(
             'commandes',
-            'favoris',
+        
             'totalCommand',
-            'totalFavoris',
+         
             'commandesEnCours',
             'solde',
             'totalPoints',

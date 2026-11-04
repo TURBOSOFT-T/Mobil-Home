@@ -86,16 +86,6 @@ class User extends Authenticatable
         return $this->hasMany(contenu_commande::class, 'commercial_id');
     }
 
-      public function coupons()
-    {
-        return $this->hasMany(Coupon::class, 'commercial_id');
-    }
-
-
-    public function favoris()
-    {
-        return $this->hasMany(favoris::class, 'id_user');
-    }
 
 
     public function getIsAdminAttribute()

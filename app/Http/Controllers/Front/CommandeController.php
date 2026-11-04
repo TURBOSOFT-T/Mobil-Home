@@ -51,23 +51,8 @@ class CommandeController extends Controller
 
     $paniers_session = session('cart', []);
 
-    // Vérifier que $paniers_session est bien un tableau
-    if (!is_array($paniers_session)) {
-      $paniers_session = [];
-    }
-    $paniers = [];
-    $total = 0;
-    if (empty($paniers_session)) {
-      request()->session()->flash('error', 'La panier est vide !');
-      return back();
-    }
 
 
-    if (session()->has('coupon')) {
-      $coupon = session()->get('coupon');
-      $value = Coupon::where('code', $coupon)->first();
-      $discuont = session('coupon')['value'];
-    }
 
     foreach ($paniers_session as $session) {
       $produit = produits::find($session['id_produit']);
@@ -91,8 +76,7 @@ class CommandeController extends Controller
     }
 
     $gouvernorats = $this->getListGouvernorat();
-    $transports = Transport::all();
-
+  
     return view('front.commandes.checkout', compact('configs', 'paniers', 'total', 'gouvernorats', 'transports'));
   }
 public function confirmOrder(Request $request)
@@ -120,12 +104,7 @@ public function confirmOrder(Request $request)
         return back()->withErrors(['cart' => 'Le panier est vide !']);
     }
 
-    // 3. Gestion du transport
-    $transport = null;
-    if ($request->type_commande === 'livraison') {
-        $transport = Transport::findOrFail($request->transport_id);
-    }
-
+  
     // 4. Gestion de l'utilisateur / Client
     $connecte = Auth::user();
     $userId = null;
@@ -162,34 +141,11 @@ public function confirmOrder(Request $request)
     }
 
     // Application des réductions et frais de port
-    $totalCommande -= session('coupon')['value'] ?? 0;
+  
     $totalCommande += $transport->frais ?? 0;
 
-    // 6. Vérifications des soldes & points (Sécurité renforcée)
-    if ($data['mode'] === 'solde') {
-        if (!$connecte || $connecte->solde < $totalCommande) {
-            return redirect()->back()->with('swal_error', 'Votre solde est insuffisant pour cette commande.');
-        }
+ 
 
-        $connecte->solde -= $totalCommande;
-        $connecte->save();
-
-        Transaction::create([
-            'user_id'     => $connecte->id,
-            'montant'     => $totalCommande,
-            'type'        => 'Debit',
-            'description' => 'Paiement pour une commande',
-        ]);
-    }
-
-    if ($data['mode'] === 'points') {
-        if (!$connecte || $connecte->points < $totalCommande) {
-            return redirect()->back()->with('swal_error', 'Votre total de points est insuffisant pour cette commande.');
-        }
-        
-        $connecte->points -= $totalCommande;
-        $connecte->save();
-    }
 
     // 7. Création de la commande
     $reference = 'SWB-' . date('Ymd') . '-' . strtoupper(Str::random(6));
@@ -207,7 +163,7 @@ public function confirmOrder(Request $request)
         'note'           => $request->note,
         'gouvernorat'    => $request->gouvernorat,
         'mode'           => $data['mode'],
-        'coupon'         => session('coupon')['value'] ?? null,
+      
         'type_commande'  => $request->type_commande,
         'transport_id'   => $transport->id ?? null,
         'frais'          => $transport->frais ?? 0,
@@ -256,18 +212,7 @@ public function confirmOrder(Request $request)
         }
     }
 
-    // 9. Enregistrement de l'historique des points cumulés
-    if ($connecte && $total_gain_points > 0) {
-        foreach ($historiquePoints as $historique) {
-            $his = new Historique_points();
-            $his->user_id     = $connecte->id;
-            $his->produit_id  = $historique['produit_id'];
-            $his->commande_id = $order->id;
-            $his->montant     = $historique['montant']; // Correction ici : On prend le montant calculé propre à cette ligne
-            $his->save();
-        }
-    }
-
+   
     // 10. Nettoyage de la session
     session()->forget(['cart', 'coupon']);
 

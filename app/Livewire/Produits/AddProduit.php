@@ -7,6 +7,9 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Intervention\Image\ImageManagerStatic as Image;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
 
 class AddProduit extends Component
 {
@@ -74,6 +77,26 @@ class AddProduit extends Component
             $this->sous_categories = Sous_category::where('categorie_id', $this->category_id)->get();
             $this->familles = Famille::where('sous_categorie_id', $this->sous_categorie_id)->get();
         }
+    }
+
+
+     private function compressAndStoreImage($imageFile)
+    {
+        $filename = 'produits/' . uniqid() . '.webp';
+
+        // Initialisation du manager avec le driver GD
+        $manager = new ImageManager(new Driver());
+
+        // Lecture et redimensionnement
+        $img = $manager->read($imageFile->getRealPath())
+            ->scale(width: 1000); // Redimensionne proportionnellement à 1000px de large max
+
+        // Encodage en WebP avec 80% de qualité et sauvegarde sur le disque public
+        $encoded = $img->toWebp(80);
+
+        Storage::disk('public')->put($filename, (string) $encoded);
+
+        return $filename;
     }
 
     public function toggleStatut($id)
@@ -201,20 +224,20 @@ class AddProduit extends Component
         } else {
             $produit->caracteristiques = json_encode([]);
         }
+      // Compression et stockage de la photo principale
+        $produit->photo = $this->compressAndStoreImage($this->photo);
 
-        // Upload photo principale
-        if ($this->photo) {
-            $produit->photo = $this->photo->store('produits', 'public');
-        }
-
-        // Upload galerie photos
+        // Compression et stockage de la galerie photos
         if ($this->photos) {
             $photosPaths = [];
             foreach ($this->photos as $p) {
-                $photosPaths[] = $p->store('produits', 'public');
+                $photosPaths[] = $this->compressAndStoreImage($p);
             }
             $produit->photos = json_encode($photosPaths);
+        } else {
+            $produit->photos = json_encode([]);
         }
+
 
         $produit->save();
 
@@ -228,7 +251,7 @@ class AddProduit extends Component
             $this->validate([
                 'nom'               => 'required|string',
                 'slug'              => 'nullable|string|unique:produits,slug,' . $this->produit->id,
-                'prix'              => 'required|numeric',
+                'prix'              => 'nullable|numeric',
                 'meta_description'  => 'nullable|string|max:255',
                 'type_habitation'   => 'required|in:chambre,studio,appartement,duplex,villa,bureau,commerce,terrain,maison,boutique,local_commercial,autre',
                 'photo'             => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
@@ -276,17 +299,29 @@ class AddProduit extends Component
             });
             $this->produit->caracteristiques = json_encode(array_values($filteredCaracteristiques));
 
-            if ($this->photo) {
-                if ($this->produit->photo) {
+         if ($this->photo) {
+                if ($this->produit->photo && Storage::disk('public')->exists($this->produit->photo)) {
                     Storage::disk('public')->delete($this->produit->photo);
                 }
-                $this->produit->photo = $this->photo->store('produits', 'public');
+                $this->produit->photo = $this->compressAndStoreImage($this->photo);
             }
 
+            // 2. Gestion de la galerie photos (si de nouvelles photos sont envoyées)
             if ($this->photos) {
+                // Supprimer les anciennes photos de la galerie stockées en JSON
+                $oldPhotos = json_decode($this->produit->photos, true);
+                if (is_array($oldPhotos)) {
+                    foreach ($oldPhotos as $oldPhoto) {
+                        if (Storage::disk('public')->exists($oldPhoto)) {
+                            Storage::disk('public')->delete($oldPhoto);
+                        }
+                    }
+                }
+
+                // Enregistrer les nouvelles
                 $photosPaths = [];
                 foreach ($this->photos as $p) {
-                    $photosPaths[] = $p->store('produits', 'public');
+                    $photosPaths[] = $this->compressAndStoreImage($p);
                 }
                 $this->produit->photos = json_encode($photosPaths);
             }

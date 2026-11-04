@@ -90,11 +90,7 @@ class HomeController extends Controller
     }
    
 
-    public function Not_Autorized(){
-        $template = templates::where('meta_error',true)->first();
-        $meta = $template->meta ?? "";
-        return view("front.Not_Autorized", compact("meta"));
-    }
+ 
 
    
     public function print_commande($id)

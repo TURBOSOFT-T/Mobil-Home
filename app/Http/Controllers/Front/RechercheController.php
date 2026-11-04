@@ -26,7 +26,7 @@ class RechercheController extends Controller
             });
         }
 
-        $produits = $query->latest()->paginate(9)->withQueryString();
+        $produits = $query->latest()->paginate(12)->withQueryString();
 
         return view('front.recherche', compact('produits'));
     }

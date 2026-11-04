@@ -33,9 +33,7 @@ protected $table ='contenu_commandes';
      public function commercial(){
         return $this->belongsTo(User::class ,'commercial_id')->withDefault();
     }
- public function table(){
-        return $this->belongsTo(Table::class ,'table_id')->withDefault();
-    }
+
     public function commandes(){
         return $this->belongsTo(commandes::class ,'id_commande');
     }

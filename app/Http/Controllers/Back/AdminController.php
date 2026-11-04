@@ -437,29 +437,7 @@ class AdminController extends Controller
         return view('admin.services.update', compact('service'));
     }
 
-    ////////////////coupons //////////////////
-
-    public function coupons()
-    {
-        $coupons = Coupon::orderBy('id', 'DESC')->paginate('10');
-        return view('admin.coupons.list', compact('coupons'));
-    }
-
-    public function coupon_add()
-    {
-        $commercials = User::where('role', 'personnel')->get();
-        return view('admin.coupons.add', compact('commercials'));
-    }
-
-    public function coupons_update($id)
-    {
-        $coupon = Coupon::find($id);
-        if (!$coupon) {
-            $message = "Coupon non disponible !";
-            abort(404, $message);
-        }
-        return view('admin.coupons.update', compact('coupon'));
-    }
+  
 
 
     ///////////////Testimonials////////////

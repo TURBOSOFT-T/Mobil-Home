@@ -25,65 +25,65 @@
                     {{ \App\Helpers\TranslationHelper::TranslateText('Détails') }}
                 </button>
 
- <!-- Modal Bootstrap des détails -->
-    <div class="modal fade" id="produitModal" tabindex="-1" aria-hidden="true" wire:ignore.self>
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content border-0 shadow">
-                @if($selectedProduit)
-                <div class="modal-header bg-light">
-                    <h5 class="modal-title fw-bold text-dark">{{ $selectedProduit->nom }}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <!-- Image -->
-                        <div class="col-md-6 mb-3 mb-md-0">
-                            @if($selectedProduit->photo)
-                            <img src="{{ Storage::url($selectedProduit->photo) }}" class="img-fluid rounded w-100" style="height: 280px; object-fit: cover;" alt="{{ $selectedProduit->nom }}">
-                            @else
-                            <img src="{{ asset('icons/no-image.webp') }}" class="img-fluid rounded w-100" style="height: 280px; object-fit: cover;" alt="Aucune image">
-                            @endif
-                        </div>
-                        <!-- Infos -->
-                        <div class="col-md-6">
-                            <span class="badge bg-dark text-capitalize mb-2">{{ $selectedProduit->type_habitation }}</span>
-                            <h3 class="text-success fw-bold mb-3">
-                                {{ number_format($selectedProduit->prix, 0, ',', ' ') }} <x-devise></x-devise>
-                            </h3>
-                            <p class="text-muted small mb-2">
-                                <strong>Statut :</strong> <span class="badge bg-success text-capitalize">{{ $selectedProduit->statut }}</span>
-                            </p>
-                            <hr>
-                            <div class="text-muted small overflow-auto" style="max-height: 120px;">
-                                {!! $selectedProduit->description ?? 'Aucune description disponible.' !!}
+                <!-- Modal Bootstrap des détails -->
+                <div class="modal fade" id="produitModal" tabindex="-1" aria-hidden="true" wire:ignore.self>
+                    <div class="modal-dialog modal-lg modal-dialog-centered">
+                        <div class="modal-content border-0 shadow">
+                            @if($selectedProduit)
+                            <div class="modal-header bg-light">
+                                <h5 class="modal-title fw-bold text-dark">{{ $selectedProduit->nom }}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <!-- Image -->
+                                    <div class="col-md-6 mb-3 mb-md-0">
+                                        @if($selectedProduit->photo)
+                                        <img src="{{ Storage::url($selectedProduit->photo) }}" class="img-fluid rounded w-100" style="height: 280px; object-fit: cover;" alt="{{ $selectedProduit->nom }}">
+                                        @else
+                                        <img src="{{ asset('icons/no-image.webp') }}" class="img-fluid rounded w-100" style="height: 280px; object-fit: cover;" alt="Aucune image">
+                                        @endif
+                                    </div>
+                                    <!-- Infos -->
+                                    <div class="col-md-6">
+                                        <span class="badge bg-dark text-capitalize mb-2">{{ $selectedProduit->type_habitation }}</span>
+                                        <h3 class="text-success fw-bold mb-3">
+                                            {{ number_format($selectedProduit->prix, 0, ',', ' ') }} <x-devise></x-devise>
+                                        </h3>
+                                        <p class="text-muted small mb-2">
+                                            <strong>Statut :</strong> <span class="badge bg-success text-capitalize">{{ $selectedProduit->statut }}</span>
+                                        </p>
+                                        <hr>
+                                        <div class="text-muted small overflow-auto" style="max-height: 120px;">
+                                            {!! $selectedProduit->description ?? 'Aucune description disponible.' !!}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer bg-light">
+                                <a href="https://wa.me/?text={{ urlencode('Bonjour, je suis intéressé par votre bien : ' . $selectedProduit->nom) }}" target="_blank" class="btn btn-success">
+                                    <i class="fab fa-whatsapp"></i> Contacter pour ce bien
+                                </a>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                            </div>
+                            @endif
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer bg-light">
-                    <a href="https://wa.me/?text={{ urlencode('Bonjour, je suis intéressé par votre bien : ' . $selectedProduit->nom) }}" target="_blank" class="btn btn-success">
-                        <i class="fab fa-whatsapp"></i> Contacter pour ce bien
-                    </a>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-                </div>
-                @endif
-            </div>
-        </div>
-    </div>
 
-    <!-- Script d'écoute Livewire pour afficher le modal Bootstrap -->
-    @script
-    <script>
-        document.addEventListener('livewire:initialized', () => {
-            const modalElement = document.getElementById('produitModal');
-            const produitModal = new bootstrap.Modal(modalElement);
+                <!-- Script d'écoute Livewire pour afficher le modal Bootstrap -->
+                @script
+                <script>
+                    document.addEventListener('livewire:initialized', () => {
+                        const modalElement = document.getElementById('produitModal');
+                        const produitModal = new bootstrap.Modal(modalElement);
 
-            $wire.on('open-modal', () => {
-                produitModal.show();
-            });
-        });
-    </script>
-    @endscript
+                        $wire.on('open-modal', () => {
+                            produitModal.show();
+                        });
+                    });
+                </script>
+                @endscript
 
                 <button type="button" class="axil-btn btn-bg-primary2"
                     data-bs-toggle="modal"
@@ -97,7 +97,7 @@
         </div>
     </div>
 
-   
+
 
     <!-- Modal Bootstrap pour la Réservation -->
     <div class="modal fade" id="reservationModal" tabindex="-1" aria-labelledby="reservationModalLabel" aria-hidden="true">

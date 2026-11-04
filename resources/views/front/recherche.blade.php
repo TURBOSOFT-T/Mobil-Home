@@ -8,14 +8,14 @@ $config = DB::table('configs')->first();
 <div class="container py-5">
     <div class="row mb-4">
         <div class="col-md-12 text-center">
-            <h2 class="fw-bold">🔍 
-                 {{ \App\Helpers\TranslationHelper::TranslateText('Recherche de biens immobiliers') }} .</h3>
-          
+            <h2 class="fw-bold">🔍
+                {{ \App\Helpers\TranslationHelper::TranslateText('Recherche de biens immobiliers') }} .</h3>
+
             </h2>
             <p class="text-muted">
-             {{ \App\Helpers\TranslationHelper::TranslateText(' Trouvez le logement ou le terrain qui vous correspond') }} .</h3>
-              
-           </p>
+                {{ \App\Helpers\TranslationHelper::TranslateText(' Trouvez le logement ou le terrain qui vous correspond') }} .</h3>
+
+            </p>
         </div>
     </div>
 
@@ -33,8 +33,8 @@ $config = DB::table('configs')->first();
             <!-- Filtrer par type d'habitation -->
             <div class="col-md-3">
                 <label class="form-label fw-bold">
-                     {{ \App\Helpers\TranslationHelper::TranslateText('Type d\'habitation') }} .</h3>
-          
+                    {{ \App\Helpers\TranslationHelper::TranslateText('Type d\'habitation') }} .</h3>
+
                 </label>
                 <select name="type" class="form-select text-capitalize">
                     <option value="">Tous les types</option>
@@ -47,7 +47,7 @@ $config = DB::table('configs')->first();
                     <option value="chambre" @selected(request('type')=='chambre' )>Chambre</option>
                     <option value="boutique" @selected(request('type')=='boutique' )>Boutique</option>
                     <option value="maison" @selected(request('type')=='maison' )>Maison</option>
-                      
+
                 </select>
             </div>
 
@@ -65,11 +65,11 @@ $config = DB::table('configs')->first();
         <div class="col-md-4 mb-4">
             <div class="card h-100 shadow-sm border-0">
                 <div class="position-relative">
-                   @if($produit->photo)
-    <img src="{{ Storage::url($produit->photo) }}" class="card-img-top" alt="{{ $produit->nom }}" style="height: 200px; object-fit: cover;" loading="lazy">
-@else
-    <img src="{{ asset('icons/no-image.webp') }}" class="card-img-top" alt="Aucune image" style="height: 200px; object-fit: cover;" loading="lazy">
-@endif
+                    @if($produit->photo)
+                    <img src="{{ Storage::url($produit->photo) }}" class="card-img-top" alt="{{ $produit->nom }}" style="height: 200px; object-fit: cover;" loading="lazy">
+                    @else
+                    <img src="{{ asset('icons/no-image.webp') }}" class="card-img-top" alt="Aucune image" style="height: 200px; object-fit: cover;" loading="lazy">
+                    @endif
                     <span class="position-absolute top-0 start-0 m-2 badge bg-dark text-capitalize">
                         {{ $produit->type_habitation }}
                     </span>
@@ -111,8 +111,8 @@ $config = DB::table('configs')->first();
         @empty
         <div class="col-12 text-center py-5">
             <h5 class="text-muted">
-                 {{ \App\Helpers\TranslationHelper::TranslateText('Aucun bien immobilier ne correspond à vos critères de recherche.') }} .</h3>
-          
+                {{ \App\Helpers\TranslationHelper::TranslateText('Aucun bien immobilier ne correspond à vos critères de recherche.') }} .</h3>
+
             </h5>
         </div>
         @endforelse

@@ -140,7 +140,7 @@
                                                         {{ $commande->contenus->count() }}
                                                     </td>
                                                     <td data-label="Order ID"> {{ $commande->montant() }} <x-devise></x-devise></td>
-                                                    <td data-label="Product Details"> {{ $commande->frais ?? 0 }} <x-devise></x-devise></td>
+                                                    <td data-label="Product Details"> {{ $commande->commission() ?? 0 }} <x-devise></x-devise></td>
                                                     <td data-label="price"> {{ $commande->created_at }}</td>
                                                     <td data-label="Status" class="text-green"> {{ $commande->statut }}
                                                     </td>
@@ -191,12 +191,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="tab-pane fade" id="nav-downloads" role="tabpanel">
-                                <div class="axil-dashboard-order">
-                                    <p> {{ \App\Helpers\TranslationHelper::TranslateText('Mes favoris') }}</p>
-                                    @livewire('Front.Favoris')
-                                </div>
-                            </div>
+                           
 
 
                             <div class="tab-pane fade" id="nav-account" role="tabpanel">

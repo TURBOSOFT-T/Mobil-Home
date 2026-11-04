@@ -87,19 +87,13 @@ Route::get('/commander', [CommandeController::class, 'commander'])->name('comman
 Route::post('/order', [CommandeController::class, 'confirmOrder'])->name('order.confirm');
 Route::get('/thank-you', [CommandeController::class, 'index'])->name('thank-you');
 
-Route::post('/savecoupon', [CouponController::class, 'savecoupon'])->name('savecoupon');
-Route::post('/apply-coupon', [CouponController::class, 'applyCoupon'])->name('apply.coupon');
-
 
 
 // Utilisateur authentifié
 Route::middleware('auth')->group(function () {
 
 
-    //gestion des favoris
-    Route::post('/client/ajouter_favoris', [favoris_client::class, 'add']);
-    Route::get('/favories', [MyAccountController::class, 'favories'])->name('favories');
-
+ 
     ///Mon compte
     Route::get('/comptes', [MyAccountController::class, 'comptes'])->name('comptes');
     Route::get('/account', [MyAccountController::class, 'account'])->name('account');
@@ -146,11 +140,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/admin/familles/add', [AdminController::class, 'famille_add']);
     Route::resource('famille', FamilleController::class);
 
-    Route::get('/admin/tables', [AdminController::class, 'tables'])
-        ->name('tables');
-    Route::get('/admin/caissiers', [AdminController::class, 'caissiers'])
-        ->name('caissiers');
-    Route::get('/admin/table/add', [AdminController::class, 'table_add']);
 
 
 
